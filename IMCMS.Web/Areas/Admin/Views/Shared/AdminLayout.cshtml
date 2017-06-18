@@ -1,0 +1,110 @@
+﻿@model AdminBaseViewModel
+@using IMCMS.Models.Entities
+@{ var viewPage = (string)TempData["ViewPage"];}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>@ViewBag.Title</title>
+  <script type="text/javascript">var _gaq = _gaq || [];</script>
+    <script src="//cdn.ckeditor.com/4.5.6/full/ckeditor.js"></script>
+    <script src="~/includes/js/plupload.full.min.js"></script>
+    @Scripts.Render("~/bundles/js/jquery", "~/bundles/js/jquery-ui", "~/bundles/js/adminnav", "~/bundles/js/aui")
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700" />
+    @Styles.Render("~/bundles/css/aui")
+	@Styles.Render("~/bundles/css/jquery-ui")
+  @RenderSection("Head", required: false)
+  <script type="text/javascript">
+    $(function () {
+      $('.deleteItem, .navEditorItemDelete').adminDelete('@Url.Action("Delete")', '@Url.Action("Undo")');
+    });
+  </script>
+</head>
+<body>
+  <div class="fullAdminWrap">
+    @Html.Partial("AdminNav")
+    @using (Html.BeginForm())
+    {
+      <div class="adminTopBar">
+        @RenderSection("PageTitle", required: false)
+        <div class="adminTopBarButtons">
+          @RenderSection("Buttons", required: false)
+          @if (ViewBag.History != null && ((IEnumerable<IVersionable>)ViewBag.History).Any())
+          {
+            <div class="rollbackWrap">
+              <div class="topBarLink"><span class="fa fa-mail-reply"></span>Rollback</div>
+              <div class="rollbackDropdown">
+                @foreach (IVersionable rb in (IEnumerable<IVersionable>)ViewBag.History)
+                {
+                  var querystring = HttpUtility.ParseQueryString(Request.Url.Query);
+                  querystring["r"] = rb.ID.ToString(); // using array instead of .Add() to overwrite an already existing querystring variable
+                  <a href="@(Request.Path)?@querystring.ToString()">@rb.Created.ToString()</a>
+                }
+              </div>
+            </div>
+          }
+          @*<a class="topBarLink" href="@Url.Action("Logout", "Account", new { area = "Admin" })"><span class="fa fa-sign-out"></span>Sign Out</a>*@
+        </div>
+      </div>
+      <div id="changesunsaved" data-type="ChangesUnsaved" class="warning message">Changes not saved</div>
+      @*<div id="itemcreated" data-type="ItemCreated" class="success message">
+            Created Successfully!
+            @if (viewPage.IsNotNullOrEmpty())
+            {
+                <a href="@viewPage" target="_blank">View this page</a>
+            }
+            <a class="closebutton">×</a>
+        </div>*@
+      <div id="itemupdated" data-type="ItemUpdated" class="success message">
+        Updated Successfully!<a class="closebutton">×</a>
+        @if (viewPage.IsNotNullOrEmpty())
+        {
+          <a href="@viewPage" target="_blank">View this page</a>
+        }
+      </div>
+      <div id="undo-bar" data-type="ItemDeleted" class="undo-bar notify message">This item has been deleted. <a href="" id="undo-action">Undo</a><a class="closebutton">×</a></div>
+
+      if (Model != null && Model.Error.IsNotNullOrEmpty())
+      {
+        <div class="error">
+          <p>Uh oh, something went wrong. Below is some of the technical jargon will should help us get to the bottom of the problem:</p>
+          <hr />
+          <p class="errordetails">@(Html.Raw(Model.Error.Replace(" ", "&nbsp;").nl2br()))</p>
+        </div>
+        <script type="text/javascript"> _gaq.push(['_trackEvent', 'Error', 'Unhandled Exception']); </script>
+        }
+        @Html.AntiForgeryToken()
+      @Html.ValidationSummary()
+      @RenderBody()
+      
+    }
+    <div class="adminOverlayWrap">
+      <div class="adminOverlay">
+        <p class="adminOverlayTitle">Success!</p>
+        <div class="smallSpace">&nbsp;</div>
+        @if (Model != null && Model.ViewPage.IsNotNullOrEmpty())
+        {
+          <a class="addNew" href="@Model.ViewPage">View Page</a>
+        }
+
+        @if (Model != null && Model.ListPage.IsNotNullOrEmpty())
+        {
+          <a class="addNew addNewAlt" href="@Model.ListPage">Back to List</a>
+        }
+        <a class="adminOverlayClose">&nbsp;</a>
+      </div>
+    </div>
+  </div>
+
+  @*@StackExchange.Profiling.MiniProfiler.RenderIncludes()*@
+
+
+  @if (Model != null && Model.Success)
+  {
+    <script type="text/javascript">Admin.Success(); _gaq.push(['_trackEvent', 'Success', 'true']);</script>
+  }
+  @if (Model != null && Model.IsRollback)
+  {
+    <script type="text/javascript">Admin.setDirty(); _gaq.push(['_trackEvent', 'Rollback', 'View']);</script>
+  }
+</body>
+</html>

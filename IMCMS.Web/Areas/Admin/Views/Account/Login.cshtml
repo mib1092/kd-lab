@@ -1,0 +1,23 @@
+﻿@model IMCMS.Web.Areas.Admin.Views.Account.LoginModel
+@{
+  ViewBag.Title = @IMCMS.Common.Configuration.Config.ConfigurationSection.Customer.Name + " Website Admin powered by Imagemakers";
+  Layout = "~/Areas/Admin/Views/Shared/Account.cshtml";
+}
+<p class="adminAccountPageTitle">Site Administration Login</p>
+<div class="medSpace">&nbsp;</div>
+<div class="form">
+  @Html.ValidationSummary()
+  <div class="adminAccountInput adminAccountInputIcon aaiUser">
+    <input type="text" name="Username" placeholder="username or email address" autofocus />
+  </div>
+  <div class="adminAccountInput adminAccountInputIcon aaiPwd">
+    <input type="password" placeholder="password" id="password-input" />
+    <input type="hidden" name="Password" id="password" />
+  </div>
+  <button class="adminAccountSubmit" type="submit">Submit</button>
+  <a class="forgotPassword" href="@Url.Action("ForgotPassword")">forgot your password?</a>
+</div>
+<noscript>
+  <h2>Javascript Required</h2>
+  <p>Javascript is required to use the administration area. <br />Please visit <a href="http://www.enable-javascript.com/">http://enable-javascript.com/</a> to see how to enable javascript in your browser.</p>
+</noscript>

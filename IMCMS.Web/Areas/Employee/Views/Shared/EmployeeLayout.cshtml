@@ -1,0 +1,31 @@
+﻿@using IMCMS.Common.Helpers
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@(ViewBag.Title != null ? String.Format("{0} - Kolde Construction, Inc.", ViewBag.Title) : "Kolde Construction, Inc.")</title>
+  <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/touch-icon-60.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/touch-icon-76.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/touch-icon-120.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/touch-icon-152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/touch-icon-180.png" />
+  @Styles.Render("~/bundles/css/eui")
+  @RenderSection("Head", required: false)
+  @if (User.Identity.IsAuthenticated) { @Styles.Render("~/bundles/css/adminnav") }
+  <link href="/includes/css/print.css" type="text/css" rel="stylesheet" media="print" />
+</head>
+<body>
+  <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+  <div class="fullWrap @(User.Identity.IsAuthenticated ? "adminCollapsed" : "")">
+    @if (User.Identity.IsAuthenticated) { @Html.Partial("AdminNav") }
+  </div>
+  @RenderBody()
+  @Scripts.Render("~/bundles/js/jquery", "~/bundles/js/eui")
+  @if (User.Identity.IsAuthenticated) { @Scripts.Render("~/bundles/js/adminnav") }
+  @Html.GoogleAnalytics()
+  @StackExchange.Profiling.MiniProfiler.RenderIncludes()
+  @RenderSection("Footer", required: false)
+</body>
+</html>

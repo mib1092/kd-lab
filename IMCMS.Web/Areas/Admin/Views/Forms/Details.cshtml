@@ -1,0 +1,22 @@
+﻿@model AdminBaseViewModel<Contact>
+@{
+    ViewBag.Title = "Contact Details";
+    Layout = "~/Areas/Admin/Views/Shared/DefaultIndex.cshtml";
+}
+
+@section ModuleTitle {
+    Contact Details
+}
+@section ModuleTitleLink {
+    <a class="backLink" href="@Url.Action("Index")">back</a>
+}
+@section AddButton { &nbsp; }
+
+<p class="formDesc">Name: <b>@Model.Item.Name</b></p>
+<p class="formDesc">Email: <b>@Model.Item.Email</b></p>
+<p class="formDesc">Phone: <b>@Model.Item.Phone</b></p>
+<p class="formDesc">Type: <b>@Model.Item.Options</b></p>
+<p class="formDesc">Message: <b>@Model.Item.Message</b></p>
+
+<div class="medSpace">&nbsp;</div>
+<a href="@Url.Action("Index")" class="cancel">Back</a>

@@ -1,0 +1,181 @@
+﻿@model CareersViewModel
+@{
+  ViewBag.Title = "Careers";
+}
+@section Head {
+  <script type="text/javascript">
+    (function ($) {
+      $.validator.unobtrusive.adapters.addBool("mandatory", "required");
+    }(jQuery));
+  </script>
+}
+<div class="section-career-banner" id="bodyWrap">
+  <img src="~/images/careers_bg.jpg" alt="Photo of a Kolde Contruction site">
+  <div class="banner-table">
+    <div class="banner-cell">
+      <div class="center">
+        <div>
+          <ul class="anchor-list">
+            <li>
+              <a href="#bodyWrap">Start your career</a>
+              <a href="#stats">Stats</a>
+              <a href="#testimonials">Testimonials</a>
+              <a href="#open-positions">Open positions</a>
+              <a href="#apply">Apply now</a>
+            </li>
+          </ul>
+          <h1 class="banner-title">Start your career</h1>
+          <p class="banner-desc">Work on the best projects with the best equipment</p>
+          <a href="#open-positions" class="btn">All Open Positions</a>
+        </div>
+        <div class="banner-bottom-box">
+          <span class="bottom-name"><strong>FHLB Bank</strong>&nbsp;&nbsp;&middot;&nbsp;&nbsp;Topeka, Kansas</span>
+          <p class="bottom-info">Probably should caption this with<br /> some details about the project</p>
+          <a href="/broken">See Our Projects</a>
+        </div>
+      </div>
+    </div>
+    <a href="#stats" class="banner-down-arrow" title="Scroll down"></a>
+  </div>
+</div>
+<div class="section-advancement" id="stats">
+  <div class="center">
+    <div class="left-box">
+      <h3 class="advancement-title">Advancement <br />and Promotions</h3>
+      <ul class="promotions-list">
+        <li>
+          <div class="promotions-box">
+            <div class="promotions-circle">
+              <span class="circle-value">75%</span>
+              <div class="demo">
+                <svg class="progress-svg" width="260" height="260" viewBox="0 0 260 260">
+                  <circle cx="130" cy="130" r="125" fill="none" stroke="#EAEAEA" stroke-width="10" />
+                  <circle class="progress__value" cx="130" cy="130" r="125" fill="none" stroke="#cd0000" stroke-width="10" />
+                </svg>
+              </div>
+            </div>
+            <p class="promotions-desc">75% of all promotions are made from within Kolde</p>
+          </div>
+        </li>
+        <li>
+          <div class="promotions-box">
+            <div class="promotions-circle">
+              <span class="circle-value">72%</span>
+              <div class="demo">
+                <svg class="progress-svg" width="260" height="260" viewBox="0 0 260 260">
+                  <circle cx="130" cy="130" r="125" fill="none" stroke="#EAEAEA" stroke-width="10" />
+                  <circle class="progress__value" cx="130" cy="130" r="125" fill="none" stroke="#cd0000" stroke-width="10" />
+                </svg>
+              </div>
+            </div>
+            <p class="promotions-desc">72% of all Kolde employees are promoted, 53% of those are promoted a second time, 30% of those employees are promoted a third time or more</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="right-box">
+      <div class="retention-wrap">
+        <h3 class="advancement-title">job retention</h3>
+        <ul class="retention-list">
+          <li>
+            <div class="retention-box">
+              <div class="retention-line">
+                <span class="progress-value">6.3 years</span>
+                <div class="progress-line">
+                  <span class="start">0</span>
+                  <span class="line">
+                    <span class="progress" style="width: 63%" data-progress="63"></span>
+                  </span>
+                  <span class="finish">10</span>
+                </div>
+              </div>
+              <p class="promotions-desc">The average Kolde employee stays with us for an average of 6.3 years</p>
+            </div>
+          </li>
+          <li>
+            <div class="retention-box">
+              <div class="retention-line">
+                <span class="progress-value">43.5 hrs/week</span>
+                <div class="progress-line">
+                  <span class="start">0</span>
+                  <span class="line">
+                    <span class="progress" style="width: 87%" data-progress="43.5"></span>
+                  </span>
+                  <span class="finish">50</span>
+                </div>
+              </div>
+              <p class="promotions-desc">At Kolde, providing stability for your family and you is key. That's why year-round work for each of our employees is a priority for us.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section-what-say" id="testimonials">
+  <div class="center">
+    <h2 class="section-title">What our employees say</h2>
+    <ul class="what-say-list">
+      <li>
+        <div class="what-say-box">
+          <h3 class="what-say-title">Short Three Words</h3>
+          <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non elit elementum, auctor risus a, aliquam turpis.</p>
+          </div>
+          <span class="what-name">Employee Name</span>
+          <span class="what-build">At Kolde Since 2002</span>
+        </div>
+      </li>
+      <li>
+        <div class="what-say-box">
+          <h3 class="what-say-title">Short Three Words Wrapping Line</h3>
+          <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non elit elementum, auctor risus a, aliquam turpis.</p>
+          </div>
+          <span class="what-name">Employee Name</span>
+          <span class="what-build">At Kolde Since 2002</span>
+        </div>
+      </li>
+      <li>
+        <div class="what-say-box">
+          <h3 class="what-say-title">Short Three Words</h3>
+          <div class="content">
+            <p>Donec bibendum eleifend libero, sit amet fringilla eros scelerisque sed. Integer lobortis eu enim vel facilisis.</p>
+          </div>
+          <span class="what-name">Employee Name</span>
+          <span class="what-build">At Kolde Since 2002</span>
+        </div>
+      </li>
+    </ul>
+    <a href="/broken" class="down-arrow">View all testimonials</a>
+  </div>
+</div>
+<div class="section-positions" id="open-positions">
+  <div class="center">
+    <h2 class="section-title">Open positions</h2>
+    @foreach (var item in Model.Jobs.OrderByDescending(x => x.Created))
+    {
+      <a class="job-detail-box" href="@Url.Action("Index", "Careers", new { area = "", slug = @item.Slug })">
+        <span class="job-detail-header-box">
+          <span class="box-title h1style">@item.Title</span>
+          @if (item.Specs.IsNotNullOrEmpty())
+          {
+            <span class="job-info">@item.Specs</span>
+          }
+        </span>
+        <span class="content">@item.Summary</span>
+        <div class="bnt-box"><span href="/broken" class="right-arrow">Details / Apply now</span></div>
+      </a>
+    }
+    @if (!Model.Jobs.Any())
+    {
+      <p>Sorry, we aren't currently listing any positions, check back soon. You can still apply at any time by filling out the <a class="#apply-now" title="go to the application form">form below</a>.</p>
+    }
+  </div>
+</div>
+<div class="section-careers-form" id="apply">
+  <div class="center">
+    <h2 class="section-title">Apply now</h2>
+    @Html.Partial("_ApplyFormStatic")
+  </div>
+</div>

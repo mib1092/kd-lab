@@ -1,0 +1,10 @@
+﻿@model IMCMS.Models.Entities.User
+@{
+    ViewBag.Title = @IMCMS.Common.Configuration.Config.ConfigurationSection.Customer.Name + " Website Admin";
+    Layout = "~/Areas/Admin/Views/Shared/Account.cshtml";
+}
+<p>The database tables have been created to support users. The failover user for Imagemakers has been created. If you want the Imagemakers authentication system to work correctly, you still need to provide an application ID and key in the web.config</p>
+<p><b>THIS IS THE ONLY TIME THIS DATA WILL BE DISPLAYED. ADD TO PASSWORD SYSTEM!</b></p>
+<p>Username: <pre>@Model.Username</pre><br /></p>
+<p>Password: <pre>@Model.Password</pre></p>
+

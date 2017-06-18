@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Emails/_HtmlTemplate.cshtml";
+    var item = (JobApplication)ViewBag.Model;
+}
+
+<p><b>Submitted:</b> @item.Submitted.ToString("yyyy-MM-dd hh:mm tt")</p>
+<p><b>Job ID #:</b> @item.AppJobID</p>
+<p><b>Applying For:</b> @item.Job.Title</p>
+<p><b>First Name:</b> @item.FirstName</p>
+<p><b>Last Name:</b> @item.LastName</p>
+<p><b>Address:</b> @item.Address</p>
+<p><b>City:</b> @item.City</p>
+<p><b>State:</b> @item.State</p>
+<p><b>Zip:</b> @item.ZipCode</p>
+<p><b>Phone:</b> @item.Phone</p>
+<p><b>Email:</b> @item.Email</p>
+@if (item.Job.JobType == JobType.Driving)
+{
+    <p><b>CDL Drivers License #:</b> @item.DriversLicense / @item.DriversLicenseState</p>
+}
+<p><b>Felony Conviction?:</b> @(item.Felony == null ? "N/A" : item.Felony.Value ? "Yes" : "No")</p>
+<p><b>Authorized in US?:</b> @(item.USAuthorized == null ? "N/A" : item.USAuthorized.Value ? "Yes" : "No")</p>
+<p><b>Is over 18?:</b> @(item.IsEighteen == null ? "N/A" : item.IsEighteen.Value ? "Yes" : "No")</p>
+<p><b>Job History:</b></p>
+@foreach (var job in item.History)
+{
+    <div class="historyItem">
+        <p>@job.StartDate - @job.EndDate</p>
+        <p>@(job.Company), @job.Position</p>
+        <p>Description: @job.Description</p>
+    </div>
+    <p>&nbsp;</p>
+}

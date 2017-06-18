@@ -1,0 +1,36 @@
+﻿@model AdminBaseViewModel<List<Contact>>
+@{
+    ViewBag.Title = "Contact Forms";
+    Layout = "~/Areas/Admin/Views/Shared/DefaultIndex.cshtml";
+}
+
+@section ModuleTitle {
+    Contact Form Submissions
+}
+@section AddButton {
+    &nbsp;
+}
+
+<table class="defaultTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Item)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Submitted.ToString("MM/dd/yyyy")</td>
+                <td class="tableOptions"><a href="@Url.Action("Details", new { id = item.ID })">View</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

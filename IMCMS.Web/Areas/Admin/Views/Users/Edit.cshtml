@@ -1,0 +1,86 @@
+﻿@model AdminBaseViewModel<AdminUser>
+@{
+    ViewBag.Title = "Edit User - Admin";
+    var roles = ((List<AdminRole>)ViewBag.Roles).OrderBy(x => x.Name);
+}
+@section PageTitle {
+    <h1>User Details</h1>
+}
+@section Buttons {
+    <button class="topBarLink topBarSave"><span class="fa fa-save"></span>Save</button>
+    <a class="topBarLink topBarCancel" href="@Url.Action("Index")"><span class="fa fa-close"></span>Cancel</a>
+}
+
+<div class="adminContentWrap">
+    <div class="adminContentTable">
+        <div class="adminLeftColumn">
+            <div class="adminPageLeft">
+                <p class="formDesc">Email Address</p>
+                @Html.TextBoxFor(d => d.Item.EmailAddress, new { @class = "largeFormField", type = "email", placeholder = "email@address.com" })
+
+                <p class="formDesc">Change Password</p>
+                @Html.PasswordFor(d => d.Item.Password, new { placeholder = (Model.Item.ID == default(int) ? "" : "leave blank for no change"), @class = "largeFormField", data_val = false })
+
+                <div class="bottomButtonWrap">
+                    <button class="save">Save</button>
+                    <a class="cancel" href="@Url.Action("Index")">Cancel</a>
+                </div>
+                </div>
+            </div>
+        <div class="adminRightColumn">
+            <div class="adminRightColumnInner">
+                <h3 class="adminRightColumnTitle">User Options</h3>
+                <h4 class="adminRightColumnSectionTitle">User Roles</h4>
+                <div class="adminRightColumnSection">
+                    @{
+                        var inSubList = false;
+                    }
+                    @foreach (var item in roles)
+                    {
+                        var isChecked = Model.Item.Roles.Any(x => x.ID == item.ID);
+                        var split = item.Name.Split('\\');
+                        if(split.Count() > 1 && !inSubList)
+                        {
+                            inSubList = true;
+                            <text><div class="dropdownWrap selected">
+                                <label class="defaultLabel dropdownTrigger">@split[0]</label>
+                        <div class="dropdownListWrap">
+                            </text>
+                        }
+
+                        if(split.Count() == 1 && inSubList)
+                        {
+                            @:</div>
+                            inSubList = false;
+                        }
+
+
+                        <label class="defaultLabel defaultLabelCheckbox"><input type="checkbox" class="defaultCheckbox" name="userRoles" value="@item.ID" checked="@(isChecked)" />  @(split.Count() > 1 ? split[1] : item.Name)</label>
+                    }
+                    @*<div class="dropdownWrap selected">
+                        <label class="defaultLabel dropdownTrigger">Pages</label>
+                        <div class="dropdownListWrap">
+                            <div class="dropdownList">
+                                <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Government</label>
+                                <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" checked />Residents</label>
+                                <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Businesses</label>
+                                <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Visitors</label>
+                                <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Recreation</label>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />News</label>
+                    <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Agendas</label>
+                    <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Minutes</label>
+                    <label class="defaultLabel defaultLabelCheckbox"><input class="defaultCheckbox" type="checkbox" />Users</label>*@
+
+                </div>
+                <h4 class="adminRightColumnSectionTitle">Disable User</h4>
+                <div class="adminRightColumnSection">
+                    <label class="defaultLabel defaultLabelCheckbox">@Html.CheckBoxFor(d => d.Item.Disabled, new { @class = "defaultCheckbox" }) Disable User</label>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

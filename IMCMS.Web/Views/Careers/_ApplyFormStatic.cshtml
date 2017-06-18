@@ -1,0 +1,221 @@
+﻿@model CareersViewModel
+@using (Html.BeginForm("Application", "Careers", FormMethod.Post))
+{
+  <div class="career-form-box">
+    <ul class="career-form-list">
+      <li>
+        <div class="formModule">
+          @Html.ValidationSummary()
+          @Html.HiddenFor(x => x.IsApplyView)
+        </div>
+      </li>
+      <li>
+        <span class="select-wrap">
+          @Html.DropDownListFor(x => x.JobApp.JobID, Model.JobList, "position applying for", new { @class = "jobSelect defaultSelect", @id = "jobSelect", data_val = "true", data_val_required = "Please select a position to apply for." })
+        </span>
+      </li>
+      <li>
+        <ul class="name-row">
+          <li>
+            <div class="input-wrap">
+              @Html.TextBoxFor(x => x.JobApp.FirstName, new { @class = "input-style", @id = "firstName" })
+              <label for="firstName">first name</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              @Html.TextBoxFor(x => x.JobApp.LastName, new { @class = "input-style", @id = "lastName" })
+              <label for="lastName">last name</label>
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <div class="input-wrap">
+          @Html.TextBoxFor(x => x.JobApp.Email, new { @class = "input-style", @id = "email", type = "email", data_val = "true", data_val_required = "Please provide an email." })
+          <label for="email">email</label>
+        </div>
+      </li>
+      <li>
+        <div class="input-wrap">
+          @Html.TextBoxFor(x => x.JobApp.Phone, new { @class = "input-style", @id = "phone", type = "tel" })
+          <label for="phone">phone</label>
+        </div>
+      </li>
+      <li>
+        <div class="input-wrap">
+          @Html.TextBoxFor(x => x.JobApp.Address, new { @class = "input-style", @id = "address" })
+          <label for="address">address</label>
+        </div>
+      </li>
+      <li>
+        <ul class="address-row">
+          <li>
+            <div class="input-wrap">
+              @Html.TextBoxFor(x => x.JobApp.City, new { @class = "input-style", @id = "city" })
+              <label for="city">city</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              <span class="select-wrap">
+                @Html.DropDownListFor(x => x.JobApp.State, IMCMS.Web.SelectList.States, "state", new { @class = "defaultSelect", @id = "state" })
+              </span>
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              @Html.TextBoxFor(x => x.JobApp.ZipCode, new { @class = "input-style", @id = "zipcode" })
+              <label for="zipcode">zipcode</label>
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <ul class="birth-row">
+          <li>
+            <div class="input-wrap">
+              <span class="select-wrap">
+                <select id="c-birth">
+                  <option value="month" selected>month</option>
+                  <option value="1">month 1</option>
+                  <option value="2">month 2</option>
+                  <option value="3">month 3</option>
+                </select>
+              </span>
+              <label for="c-birth" class="show">date of birth</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              <span class="select-wrap">
+                <select id="c-day">
+                  <option value="day" selected>day</option>
+                  <option value="1">day 1</option>
+                  <option value="2">day 2</option>
+                  <option value="3">day 3</option>
+                </select>
+              </span>
+              <!--<label for="c-day">day</label>-->
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              <span class="select-wrap">
+                <select id="c-year">
+                  <option value="year" selected>year</option>
+                  <option value="1">year 1</option>
+                  <option value="2">year 2</option>
+                  <option value="3">year 3</option>
+                </select>
+              </span>
+              <!--<label for="c-year">year</label>-->
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <ul class="license-row">
+          <li>
+            <div class="input-wrap">
+              @Html.TextBoxFor(x => x.JobApp.DriversLicense, new { @class = "input-style", @id = "license-number" })
+              <label for="license-number">cdl driver's license #</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              <span class="select-wrap">
+                @Html.DropDownListFor(x => x.JobApp.DriversLicenseState, IMCMS.Web.SelectList.States, "license state", new { @class = "defaultSelect", @id = "license-state" })
+              </span>
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <span class="radio-name">Have you ever been convicted of a felony?</span>
+        <span class="radio-style">
+          @Html.RadioButtonFor(x => x.JobApp.Felony, "True", new { @class = "defaultRadio", id = "Felony_Yes", data_val = "true", data_val_required = "Please verify if you have been convicted of a felony." })
+          <label class="radio-btn" for="Felony_Yes">Yes</label>
+        </span>
+        <span class="radio-style">
+          @Html.RadioButtonFor(x => x.JobApp.Felony, "False", new { @class = "defaultRadio", id = "Felony_No" }) 
+          <label class="radio-btn" for="Felony_No">No</label>
+        </span>
+      </li>
+      <li>
+        <span class="radio-name">Are you authorized to work in the US??</span>
+        <span class="radio-style">
+          @Html.RadioButtonFor(x => x.JobApp.USAuthorized, "True", new { @class = "defaultRadio", id = "USAuthorized_Yes", data_val = "true", data_val_required = "Please verify your US Residency." })
+          <label class="radio-btn" for="USAuthorized_Yes">Yes</label>
+        </span>
+        <span class="radio-style">
+          @Html.RadioButtonFor(x => x.JobApp.USAuthorized, "False", new { @class = "defaultRadio", id = "USAuthorized_No" })
+          <label class="radio-btn" for="USAuthorized_No">No</label>
+        </span>
+      </li>
+    </ul>
+    <div class="job-history">
+      <h3 class="form-title">Job History</h3>
+      @JobHistory(new JobHistory(), 0)
+      <a class="right-arrow job addJob" href="javascript:;">Add another job</a>
+    </div>
+    <div class="check-box">
+      <span class="check-style">
+        <label class="defaultLabel defaultLabelLarge" for="agree-checkbox">
+          @Html.CheckBoxFor(x => x.JobApp.Agreement, new { @class = "defaultCheckbox", @id = "agree-checkbox", data_val = "true", data_val_mandatory = "You are required to agree to the application and background check." })
+          <span>I agree to the application and background check agreement.*</span>
+        </label>
+      </span>
+    </div>
+
+    <div class="form-btn-box">
+      <button type="submit" class="btn">Submit</button>
+      @Html.AntiForgeryToken()
+    </div>
+  </div>
+}
+
+@helper JobHistory(JobHistory history, int index)
+{
+  <div class="job-box">
+    <ul class="job-history-list">
+      <li>
+        <ul>
+          <li>
+            <div class="input-wrap">
+              <label class="show" for="h-begin">Most Recent Job</label>
+              @Html.TextBox("JobApp.History[" + index + "].StartDate", "", new { @class = "input-style", @id = "job-start-date-" + index, @placeholder = "start date (ex. January 2010)", @title = "Start Date" })
+            </div>
+          </li>
+          <li>
+            <div class="input-wrap">
+              @Html.TextBox("JobApp.History[" + index + "].EndDate", "", new { @class = "input-style", @id = "job-end-date-" + index, @placeholder = "end date (ex. January 2010, present)", @title = "End Date" })
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <ul>
+          <li>
+            <div class="input-wrap">
+              @Html.TextBox("JobApp.History[" + index + "].Company", "", new { @class = "input-style", @id = "company" + index, @placeholder = "Company", @title = "Company" })
+            </div>
+
+          </li>
+          <li>
+            <div class="input-wrap">
+              @Html.TextBox("JobApp.History[" + index + "].Position", "", new { @class = "input-style", @id = "position" + index, @placeholder = "Position", @title = "Position" })
+            </div>
+
+          </li>
+        </ul>
+      </li>
+      <li>
+        <div class="input-wrap">
+          <label class="show" for="brief-description-@index">Job Description</label>
+          @Html.TextArea("JobApp.History[" + index + "].Description", "", new { @class = "input-style", @id = "brief-description" + index, @placeholder = "give a brief description of your duties" })
+        </div>
+      </li>
+    </ul>
+  </div>
+}

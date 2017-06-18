@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+@{ var moduleTitle = RenderSection("ModuleTitle", required: false).ToHtmlString(); }
+
+@section PageTitle {
+    @RenderSection("ModuleTitleLink", false)
+    <h1>@Html.Raw(moduleTitle)</h1>
+}
+
+<div class="adminContentWrap">
+    <div class="adminContentTable">
+        <div class="adminLeftColumn">
+            <p class="sectionTitle">@Html.Raw(moduleTitle) 
+            @if (IsSectionDefined("AddButton"))
+            {
+                @RenderSection("AddButton");
+            }
+            else
+            {
+                <span class="inlineButtons"><a class="save" href="@Url.Action("Create")">Add New</a></span>
+            }
+            </p>
+
+            @RenderBody()
+        </div>
+        <div class="adminRightColumn">
+            @RenderSection("RightColumn", required: false)
+        </div>
+    </div>
+</div>

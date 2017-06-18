@@ -1,0 +1,457 @@
+﻿@model IMCMS.Web.ViewModels.ImageUploaderViewModel
+
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>title</title>
+        @Scripts.Render("~/bundles/js/imageuploader", "~/bundles/js/jquery-ui")
+		<!-- Load Queue widget CSS and jQuery -->
+		<link href="/includes/css/jquery-ui/jquery-ui-1.9.2.resize-drag.min.css" rel="stylesheet" />
+		<link href="/includes/css/Jcrop/jquery.Jcrop.min.css" rel="stylesheet" />
+        <script type="text/javascript" src="/includes/js/plupload.full.min.js"></script>
+		<script type="text/javascript" src="/includes/ckeditor/plugins/imimageuploader/misc/imageUploader.js"></script>
+		<script type="text/javascript">
+			var uploader = null;
+			var imageUploader = new ImageUploaderClass(@Model.MaxWidth, @Model.MaxHeight, @Model.MinWidth, @Model.MinHeight);
+			var isEditing = false;
+			window.imageUploader = imageUploader;
+		</script>
+		<script type="text/javascript">
+
+			$(document).ready(function () {
+				$('.imagePanel').width(imageUploader.maxWidth + 2).height(imageUploader.maxHeight + 2);
+
+				initPUploader();
+
+				$("#resetOriginal").click(function(e) {
+					e.preventDefault();
+					
+					imageUploader.cancelCrop();
+					imageUploader.cancelResize();
+					imageUploader.resetToOriginal(true);
+					imageUploader.initResize();
+				});
+
+				$("#startCrop").click(function(e) {
+					e.preventDefault();
+					imageUploader.cancelResize();
+					imageUploader.dialogInstance.getDialog().getButton('ok').getElement().hide();
+					imageUploader.dialogInstance.getDialog().getButton('cancel').getElement().hide();
+
+					imageUploader.initCrop();
+
+					$("#cropImagePopup").show();
+				});
+				
+				$('#cancelCrop').click(function (e) {
+					e.preventDefault();
+					imageUploader.cancelCrop();
+					imageUploader.initResize();
+					
+					imageUploader.dialogInstance.getDialog().getButton('ok').getElement().show();
+					imageUploader.dialogInstance.getDialog().getButton('cancel').getElement().show();
+					$('#cropImagePopup').hide();
+				});
+
+				$("#performCrop").click(function(e) {
+					e.preventDefault();
+					
+					//Perform crop with current coord values and img dimensions
+					var data = JSON.stringify({
+						__RequestVerificationToken : $("#imageuploadertoken").find("input[type=hidden]").val(),
+						filePath : imageUploader.filePath,
+						maxWidth : imageUploader.maxWidth, maxHeight : imageUploader.maxHeight,
+						jcropX: imageUploader.jcropX, jcropY: imageUploader.jcropY,
+						jcropW: imageUploader.jcropW, jcropH: imageUploader.jcropH,
+						currentWidth: imageUploader.originalSize.width,
+						currentHeight: imageUploader.originalSize.height,
+						overwrite : !isEditing
+					});
+					$.ajaxSetup({ global: false });
+					Common.ajax("/ImageUploader/CropFile", "post", data, function(response) {
+						if (response.ErrorMessage) {
+							//alert(response.ErrorMessage);
+							$("#cropImageFailPopup").show();
+						} else if (response.croppedFilePath && response.croppedFilePath != "") {
+							imageUploader.cancelCrop();
+
+							imageUploader.performCrop(response.croppedFilePath, function() { imageUploader.initResize(); });
+							$("#message").html("Crop Image: Success!");
+							
+							imageUploader.dialogInstance.getDialog().getButton('ok').getElement().show();
+							imageUploader.dialogInstance.getDialog().getButton('cancel').getElement().show();
+							$('#cropImagePopup').hide();
+						}
+					}, "application/json");
+					$.ajaxSetup({ global: true });
+
+				});
+
+				$("a.alignment").click(function (e) {
+					e.preventDefault();
+					if (!$(this).hasClass("clicked")) {
+						imageUploader.setAlignment($(this).data("alignment"));
+						$("a.alignment").removeClass("clicked");
+						$(this).addClass("clicked");
+					} else {
+						//reset alignment
+						imageUploader.setAlignment(0);
+						$(this).removeClass("clicked");
+					}
+				});
+
+				$("#uploadFailCancel").click(function(e) {
+					e.preventDefault();
+					imageUploader.dialogInstance.getDialog().click("cancel");
+				});
+
+				$("#cropFailTryAgain").click(function(e) {
+					e.preventDefault();
+					$("#cropImageFailPopup").hide();
+					$("#performCrop").trigger("click");
+				});
+				$("#cropFailCancel").click(function(e) {
+					e.preventDefault();
+					$("#cropImageFailPopup").hide();
+				});
+			});
+
+			function setupEditImage(filePath, croppedFilePath, alternativeText, width, height, originalWidth, originalHeight, alignment) {
+				isEditing = true;
+				$("#message").html("Editing image.");
+				$.ajaxSetup({ global: false });
+				Common.ajax("/ImageUploader/IsLocalFile", "post", JSON.stringify({
+					__RequestVerificationToken: $("#imageuploadertoken").find("input[type=hidden]").val(),
+					filePath: filePath
+				}), function(response) {
+					if (response)
+						$("#startCrop").show();
+					else
+						$("#startCrop").hide();
+				}, "application/json");
+				
+				loadImageOnPanel(filePath, croppedFilePath, alternativeText, width, height, originalWidth, originalHeight, alignment);
+				$.ajaxSetup({ global: true });
+				$('#alternativeText').focus();
+			}
+			
+			function setupUploadImage() {
+				$('#uploadSection').show();
+				uploader.refresh();
+			} 
+
+			function loadImageOnPanel(filePath, croppedFilePath, alternativeText, width, height, originalWidth, originalHeight, alignment) {
+				imageUploader.dialogInstance.getDialog().getButton('ok').getElement().show();
+				imageUploader.dialogInstance.getDialog().getButton('cancel').getElement().show();
+				var newWidth = imageUploader.maxWidth + 30;
+				var newHeight = imageUploader.maxHeight + 195;
+				imageUploader.dialogInstance.getDialog().resize(newWidth, newHeight);
+				imageUploader.dialogInstance.getDialog().move(Math.max(0, (($(window.parent).width() - newWidth) / 2) + $(window.parent).scrollLeft()),
+							Math.max(0, (($(window.parent).height() - newHeight) / 2) + $(window.parent).scrollTop()));
+				imageUploader.dialogInstance.getDialog().layout();
+				$('#uploadSection').hide();
+				
+				$('#alternativeText').val(alternativeText);
+				imageUploader.loadImage(filePath, croppedFilePath, alternativeText, width, height, originalWidth, originalHeight, alignment);
+
+				$("a.alignment").removeClass("clicked");
+				switch (imageUploader.alignment) {
+					case ALIGN_LEFT:
+						$("a.button.leftAlign").addClass("clicked");
+						break;
+					case ALIGN_CENTER:
+						$("a.button.centerAlign").addClass("clicked");
+						break;
+					case ALIGN_RIGHT:
+						$("a.button.rightAlign").addClass("clicked");
+						break;
+					case ALIGN_LEFT_FLOAT:
+						$("a.button.leftFloatAlign").addClass("clicked");
+						break;
+					case ALIGN_RIGHT_FLOAT:
+						$("a.button.rightFloatAlign").addClass("clicked");
+						break;
+				}
+
+				$('#imageSection').fadeIn(300, function() {
+					imageUploader.initResize();
+					setTimeout(function (){destroyPUploader();}, 100);
+				});
+			}
+
+			function initPUploader() {
+				uploader = new plupload.Uploader({
+					// General settings
+					runtimes: 'gears,html5,flash,silverlight,browserplus',
+					browse_button: 'uploadImageButton',
+					max_file_size: '@Model.MaxSizeFormattedMB',
+					url: '/ImageUploader/UploadFile?maxWidth=' + imageUploader.maxWidth + '&maxHeight=' + imageUploader.maxHeight,
+					multi_selection: false,
+					multipart_params: { "__RequestVerificationToken": $("#imageuploadertoken").find("input[type=hidden]").val() },
+					flash_swf_url: '/includes/js/plupload/js/plupload.flash.swf',
+					silverlight_xap_url: '/includes/js/plupload/js/plupload.silverlight.xap',
+					filters: [{ title: "Image files", extensions: "jpg,gif,png,JPEG" }],
+					unique_names: true
+				});
+
+				uploader.init();
+
+				uploader.bind('FilesAdded', function(up, files) {
+					if (uploader.state != 2 & files.length > 0) {
+						$('#uploadImage').hide();
+						$('#uploadProgress').show();
+						uploader.start();
+					}
+				});
+
+				uploader.bind('FileUploaded', function(up, file, response) {
+					var data = $.parseJSON(response.response);
+					if (data.ErrorMessage) {
+						errorUploading(/*data.ErrorMessage*/);
+					} else if (data.filePath && data.filePath != "") {
+						isEditing = false;
+						$("#message").html("Upload Image: <span class='successUpload'>Success!</span>");
+						$("#startCrop").show();
+						
+						loadImageOnPanel(data.filePath, null, data.alternativeText, data.width, data.height, data.width, data.height, ALIGN_LEFT);
+					}
+				});
+
+				uploader.bind('Error', function(up, error) {
+					errorUploading((error.message ? error.message : null));
+				});
+
+				var errorUploading = function(message) {
+					if (message) {
+						$("#errorUploadingMessage").html(message);
+					}
+					$('#uploadProgress').hide();
+					$('#uploadImage').show();
+					$("#uploadImageButton").removeClass("upload").addClass("tryAgain");
+					$("#uploadFailCancel").show();
+					$("#uploadMessage").hide();
+					$("#uploadFailMessage").show();
+				};
+			}
+
+			function destroyPUploader() {
+				uploader.destroy();
+			}
+
+		</script>
+		<style type="text/css">
+			body {
+				font: 13px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+			}
+			#resizebleImage { background: silver; }
+			.imageHeader {
+				
+			}
+			.imagePanel
+			{
+				border: 1px solid #999;
+                margin: 0 0 10px 0;
+			}
+			.imageData {
+				padding: 5px;
+			}
+			.popupWrap {
+				position: absolute;
+				display: none;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 9999;
+				overflow: visible;
+			}
+			.popupGrey
+			{
+				position: fixed;
+				display: block;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(220,220,220,0.65);
+			}
+			.popupCenter {
+				position: relative;
+				display: block;
+				min-width: 30%;
+				margin: 5% auto;
+				padding: 10px 10px 38px 10px;
+				background: #fff;
+				border: 1px solid #b2b2b2;
+				-moz-box-shadow: 0 0 20px 0 #999;
+				-webkit-box-shadow: 0 0 20px 0 #999;
+				box-shadow: 0 0 20px 0 #999;
+			}
+			.popupWrap2 {
+				position: absolute;
+				display: none;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 10000;
+				overflow: visible;
+			}
+			.popupCenter2 {
+				position: relative;
+				display: block;
+				min-width: 30%;
+				max-width: 200px;
+				max-height: 200px;
+				margin: 10% auto;
+				padding: 20px;
+				background: #fff;
+				border: 1px solid #333;
+				-moz-box-shadow: 0 0 20px 0 #999;
+				-webkit-box-shadow: 0 0 20px 0 #999;
+				box-shadow: 0 0 20px 0 #999;
+			}
+			a.button {
+				text-decoration: none;
+				display: block;
+                float: left;
+				height: 28px;
+                margin: 0 10px 10px 0;
+			}
+			a.button.upload {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/upload.png) no-repeat 0 0;
+				width: 67px;
+			}
+
+			a.button.leftAlign {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/left.png) no-repeat 0 0;
+				width: 30px;
+			}
+			a.button.rightAlign {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/right.png) no-repeat 0 0;
+				width: 30px;
+			}
+			a.button.centerAlign {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/center.png) no-repeat 0 0;
+				width: 30px;
+			}
+			a.button.leftFloatAlign {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/floatleft.png) no-repeat 0 0;
+				width: 30px;
+			}
+			a.button.rightFloatAlign {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/floatright.png) no-repeat 0 0;
+				width: 30px;
+			}
+			a.button.resetOriginal {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/resetoriginal.png) no-repeat 0 0;
+				width: 104px;
+			}
+			a.button.crop {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/crop.png) no-repeat 0 0;
+				width: 53px;
+			}
+			a.button.tryAgain {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/tryagain.png) no-repeat 0 0;
+				width: 83px;
+			}
+			a.button.cancel {
+				background: url(/includes/ckeditor/plugins/imimageuploader/images/cancel.gif) no-repeat 0 0;
+				width: 65px;
+				height: 28px;
+			}
+
+			a.button:hover {
+				background-position: 0 -28px;
+			}
+		    a.cancel:hover {
+		        background-position: 0 -29px;
+            }
+			a.button.clicked {
+				background-position: 0 -56px;
+			}
+		    #message .successUpload {font-weight: bold; font-style: italic; color: #038c00;}
+		    .clear {height: 0; line-height: 0; overflow: hidden; display: block; clear: both;}
+		    .buttonFloatText {line-height: 28px; float: left; margin: 0 10px 10px 0;}
+		    .boxTop {position: absolute; display: block; width: 100%; height: 30px; background: url(/images/admin/boxTop.gif) repeat 0 0; top: -30px; left: -1px; border-left: 1px solid #b2b2b2; border-right: 1px solid #b2b2b2;}
+		    .boxTop p {font-family: Arial, Tahoma, Verdana, sans-serif; padding: 0; margin: 0 10px; line-height: 30px; font-size: 13px; font-weight: bold; color: #333; text-shadow: 0 -1px 0 #fff;}
+		    .errorText p,.errorText span{color: #f00;}
+		</style>
+	</head>
+	<body>
+		<div>
+			<div id="imageuploadertoken" style="display: none;">
+				@Html.AntiForgeryToken()				
+			</div>
+			<div id="uploadSection" style="display: none;">
+				<div id="uploadImage">
+					<div id="uploadMessage">Uploaded images must be <br/><strong>smaller than @Model.MaxSizeFormattedMB.</strong></div>
+					<div id="uploadFailMessage" style="display: none;" class="errorText">Upload Progress: <span class="errorText">Failed</span><p id="errorUploadingMessage">Please ensure that your image is less than @Model.MaxSizeFormattedMB size.</p></div>
+					<br /><a id="uploadImageButton" href="#uploadImage" class="button upload"></a><a id="uploadFailCancel" href="#cancel" class="button cancel" style="display: none;"></a>
+					<div class="clear">&nbsp;</div>
+				</div>
+				<div id="uploadProgress" style="display: none;">Upload Progress: <img src="/includes/ckeditor/plugins/imimageuploader/images/ajax-loader.gif" alt=""/></div>
+			</div>
+			
+			<div id="imageSection" style="display: none;">
+				<div class="imageHeader">
+					<div><span id="message" class="buttonFloatText"></span><div class="clear">&nbsp;</div></div>
+					<div>
+						<span class="buttonFloatText">Image Alignment: </span>
+						<a href="#left" class="button alignment leftAlign" data-alignment="left"></a>
+						<a href="#center" class="button alignment centerAlign" data-alignment="center"></a>
+						<a href="#right" class="button alignment rightAlign" data-alignment="right"></a>
+						<a href="#leftFloat" class="button alignment leftFloatAlign" data-alignment="leftFloat"></a>
+						<a href="#rightFloat" class="button alignment rightFloatAlign" data-alignment="rightFloat"></a>
+						<div class="clear">&nbsp;</div>
+					</div>
+					<div>
+						<span class="buttonFloatText">Drag image below to resize: </span>
+						<a href="#resetOriginal" id="resetOriginal" class="button resetOriginal"></a>
+						<div style="float: right"><a id="startCrop" style="display: none;" href="#crop" class="button crop"></a></div>
+						<div class="clear">&nbsp;</div>
+					</div>
+				</div>
+				<div class="imagePanel">
+					<div class="imagePreview"><img id="resizableImage"/></div>
+				</div>
+				<div class="imageData">
+					Alt Text: <input type="text" id="alternativeText" size="50" maxlength="50" />
+					<!--Caption: <input type="text" id="caption" size="50" />-->
+				</div>
+			</div>
+			
+			<div id="cropImagePopup" style="display: none;" class="popupWrap">
+				<div class="popupCenter cropBox">
+					<div class="boxTop"><p>Crop Image</p></div>
+					<div class="imagePanel">
+						<div class="imagePreview"><img id="croppableImage"/></div>
+					</div>
+					<div>
+						<div style="float:right">
+							<a id="performCrop" href="performCrop" class="button crop"></a>
+							<a id="cancelCrop" href="cancelCrop" class="button cancel"></a>
+							<div class="clear">&nbsp;</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="cropImageFailPopup" style="display: none;" class="popupWrap2">
+				<div class="popupGrey">&nbsp;</div>
+				<div class="popupCenter2">
+					<div class="errorText"><p>Oops... something went wrong.</p><p>Please try again.</p></div>
+					<div>
+						<a id="cropFailTryAgain" href="#tryAgain" class="button tryAgain"></a>
+						<a id="cropFailCancel" href="#cancel" class="button cancel"></a>
+						<div class="clear">&nbsp;</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

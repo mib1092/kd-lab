@@ -1,0 +1,25 @@
+﻿@model IMCMS.Web.Areas.Employee.ViewModel.EmployeePortalIndexViewModel
+@{
+    ViewBag.Title = "Employee Portal Home";
+}
+
+<div class="contentWrap defaultPadding">
+    <div class="center">
+        <div class="employeeColumn">
+            <h2>@Model.Headline</h2>
+            <p>@Html.Raw(Model.Description)</p>
+        </div>
+        <div class="employeeColumn">
+            <div class="employeeSubColumm">
+                @foreach (var item in Model.Pages.OrderBy(x => x.Order))
+                {
+                    <h3>@item.Title</h3>
+                    foreach (var child in item.Children.Where(x => x.Status == IMCMS.Models.Entities.VersionableItemStatus.Live && x.Visbility == IMCMS.Models.Entities.VersionableVisbility.Public).OrderBy(x => x.Order))
+                    {
+                        <a href="@(child.PageType == IMCMS.Models.Entities.PortalType.Redirect ? child.RedirectUrl : Url.Action("Index", "Home", new { area = "Employee", slug = child.Slug }))" target="@(child.PageType == IMCMS.Models.Entities.PortalType.Redirect && child.IsNewWindow ? "_blank" : "_self")">@child.Title</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

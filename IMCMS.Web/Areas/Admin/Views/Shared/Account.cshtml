@@ -1,0 +1,65 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>@(IMCMS.Common.Configuration.Config.ConfigurationSection.Customer.Name) - Website Admin powered by Imagemakers</title>
+
+    @Scripts.Render("~/bundles/js/jquery", "~/bundles/js/encrypt")
+    @Styles.Render("~/bundles/css/aui")
+  
+  @if (ViewData["Modulus"] != null)
+  {
+    <script type="text/javascript">
+      $(function () {
+        var rsa = new RSAKey();
+        rsa.setPublic('@ViewData["Modulus"]', '@ViewData["Exponent"]');
+        $('body').click(function () {
+          rng_seed_time();
+        });
+        $('body').keydown(function () {
+          rng_seed_time();
+        });
+        $('button').click(function () {
+          if ($('#password-input').length > 0) {
+            var res = rsa.encrypt($('#password-input').val());
+            $('#password').val(hex2b64(res));
+          }
+          if ($('#confirm-password-input').length > 0) {
+            var res = rsa.encrypt($('#confirm-password-input').val());
+            $('#confirm-password').val(hex2b64(res));
+          }
+        });
+      });
+    </script>
+  }
+  @RenderSection("Head", required: false)
+</head>
+<body class="nojs">
+  <div class="adminAccountWrap">
+    <div class="adminAccountContent">
+      <a class="accountImagemakers" href="http://imagemakers-inc.com" title="Click to visit imagemakers-inc.com"><img src="~/images/admin/accountImagemakers.png" alt="Imagemakers" /></a>
+      @RenderSection("PageTitle", required: false)
+      @using (Html.BeginForm())
+      {
+        @RenderBody()
+      }
+    </div>
+  </div>
+</body>
+</html>
+
+
+@*<div class="admin-wrap">
+    <div class="admin-center">
+      <a class="imagemakers" href="http://www.imagemakers-inc.com"><img src="/images/admin/imagemakers.gif" alt="Powered by Imagemakers" /></a>
+      <div class="clear">&nbsp;</div>
+      <div class="admin-login">
+        <img class="logo" src="/images/admin/logo.jpg" alt="Logo" />
+        <h3 class="login-h3">@IMCMS.Common.Configuration.Config.ConfigurationSection.Customer.Name</h3>
+        <div class="clear">&nbsp;</div>
+        @Html.ValidationSummary()
+        @RenderBody()
+
+      </div>
+    </div>
+  </div>*@

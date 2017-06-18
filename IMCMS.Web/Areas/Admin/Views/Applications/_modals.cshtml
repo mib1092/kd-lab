@@ -1,0 +1,151 @@
+﻿
+
+<div class="modal-window" id="emailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 id="modalTitle">Send Email</h1>
+        </div>
+        <div class="clear">&nbsp;</div>
+        <div class="smallSpace">&nbsp;</div>
+        <div class="modal-main">
+            <p class="">Dear [Applicant],</p>
+            <textarea id="messageText" class="modal-text defaultTextarea">
+                @Html.Partial("_emailText")
+            </textarea>
+            <div class="smallSpace">&nbsp;</div>
+            <label><input type="checkbox" id="messageAttachment" class="no-dirty" checked="checked" />Include application PDF as an attachment</label>
+        </div>
+        <div class="smallSpace">&nbsp;</div>
+        <div class="modal-buttons">
+            <a id="modal_submit" class="modal-submit save">Send</a>
+            <a class="modal-cancel cancel" href="javascript:;">CANCEL</a>
+        </div>
+        <a class="modal-window-close">&nbsp;</a>
+    </div>
+</div>
+
+<div class="modal-window modal-window-small" id="thankyouModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1>&nbsp;</h1>
+            <div class="modal-main">
+                <span>Your email(s) has been sent</span>
+            </div>
+            <div class="smallSpace">&nbsp;</div>
+            <div class="modal-buttons">
+                <a id="modal_thanks" class="modal-submit save modalClose">CLOSE</a>
+            </div>
+        </div>
+        <a class="modal-window-close modal-thanks">&nbsp;</a>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var ckeditor;
+        var windowHeight = 509;
+        var thanksHeight = 187;
+
+       $("#sendEmail").on("click", function (e) {
+           if ($(".chkItems:checked").length > 0) {
+               if (ckeditor == null) {
+                   ckeditor = CKEDITOR.replace($("#messageText").attr('id'), {
+                       customConfig: '/includes/ckeditor/configFramed.js',
+                       toolbar: "email",
+                       width: 640,
+                       height: 200
+                   });
+                   Admin.Editors.push(ckeditor);
+                   ckeditor.on('toDataFormat', function (evt) {
+                       var filter = new CKEDITOR.htmlParser.filter({
+                           elements: {
+                               p: function (el) {
+                                   if (el.parent && el.parent.name == 'li') {
+                                       delete el.name; // This removes the element and leaves its content.
+                                   }
+                               }
+                           }
+                       });
+
+                       filter.applyTo(evt.data.dataValue);
+                   }, null, 12);
+               }
+               
+               centerModal($(".modal-content"), windowHeight);
+
+               $("#emailModal").show();
+               $("#modal_submit").prop("disabled", false);
+
+               var emailIDList = "";
+               $(".chkItems:checked").each(function () {
+
+                   emailIDList += $(this).attr("data-id") + ",";
+               });
+               emailIDList = emailIDList.substr(0, emailIDList.lastIndexOf(','));
+
+               $("#modalTitle").html("Send Email (sending to " + emailIDList.split(',').length + " applicants)")
+           }
+       });
+
+       $(window).resize(function () {
+           if ($("#emailModal").css("display") != "none")
+           {
+               centerModal($(".modal-content"), windowHeight);
+           }
+           if ($("#thankyouModal").css("display") != "none") {
+               centerModal($(".modal-content"), thanksHeight);
+           }
+       });
+
+       $(".modal-cancel, .modal-window-close, .modalClose").on("click", function (e) {
+           $(".modal-window").hide();
+           if (ckeditor != null) {
+               ckeditor.destroy();
+               ckeditor = null;
+           }
+           //location.reload();
+       });
+
+        $("#modal_submit").on("click", function (e) {
+            var emailIDList = "";
+            $(".chkItems:checked").each(function () {
+                emailIDList += $(this).attr("data-id") + ",";
+            });
+
+            if ($(this).prop("disabled") != true) {
+                $("#modal_submit").prop('disabled', true);
+                $.post('@Url.Action("SendEmail")', {
+                    messageText: ckeditor.getData(),
+                    hdnEmailList: emailIDList,
+                    sendAttachment: $("#messageAttachment").is(":checked") ? 'True' : 'False'
+                }, function (data) {
+                    if (data.ErrorMessage)
+                        console.log(data.ErrorMessage);
+                    else {
+                        ckeditor.destroy();
+                        ckeditor = null;
+                        emailIDList = "";
+                        $("#emailModal").hide();
+                        centerModal($(".modal-content"), thanksHeight);
+                        $("#thankyouModal").show();
+                    }
+                });
+            }
+        });
+
+        function centerModal($el, height) {
+            if (height < $(window).height()) {
+                var diff = ($(window).height() - height) / 2;
+                $el.css({ "margin-top": diff + "px" });
+            } else {
+                $el.css({ "margin-top": "15px" });
+            }
+        };
+
+        $("#modal_thanks, .modal-thanks").on("click", function (e) {
+            $("#thankyouModal").hide();
+            location.reload();
+        });
+        
+    })
+</script>

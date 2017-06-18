@@ -1,0 +1,18 @@
+﻿
+@{
+    var obj = ViewBag.Model as Contact;
+    var debugEmail = System.Configuration.ConfigurationManager.AppSettings["DebugEmail"];
+}
+To: @System.Configuration.ConfigurationManager.AppSettings["ContactNotificationEmail"]
+@if (!string.IsNullOrEmpty(debugEmail))
+{
+    @:Bcc: @debugEmail
+}
+
+Subject: Website Contact Form
+
+Name: @Html.Raw(obj.Name)
+Email: @Html.Raw(obj.Email)
+Phone: @Html.Raw(obj.Phone)
+Type: @obj.Options
+Message: @Html.Raw(obj.Message)

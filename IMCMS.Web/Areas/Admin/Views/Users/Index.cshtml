@@ -1,0 +1,31 @@
+﻿@model AdminBaseViewModel<IEnumerable<AdminUser>>
+@{
+  ViewBag.Title = "Users - Admin";
+}
+@section PageTitle {
+  <h1>Users</h1>
+}
+<div class="adminContentWrap">
+  <h2 class="sectionTitle">Users<span class="inlineButtons"><a class="save" href="@Url.Action("Create")">Add User</a></span></h2>
+  <div class="adminContentTable">
+    <div class="adminLeftColumn">
+      <table class="restoreTable defaultTable">
+        <tr>
+          <th @*Html.SortColumn("EmailAddress")*@>Email</th>
+          <th @*Html.SortColumn("Disabled")*@>Disabled</th>
+          <th>&nbsp;</th>
+        </tr>
+        @foreach (var item in Model.Item)
+        {
+          <tr>
+            <td>@item.EmailAddress</td>
+            <td>@(item.Disabled ? "yes" : "no")</td>
+            <td class="tableOptions"><a class="edit" href="@Url.Action("Edit", new { id = item.ID })"><span class="fa fa-pencil"></span>edit</a></td>
+          </tr>
+        }
+      </table>
+    </div>
+    <div class="adminRightColumn">&nbsp;</div>
+  </div>
+</div>
+<div class="clear">&nbsp;</div>

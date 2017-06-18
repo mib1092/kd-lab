@@ -1,0 +1,55 @@
+﻿@model AdminBaseViewModel<IEnumerable<TeamMember>>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/DefaultIndex.cshtml";
+}
+@section ModuleTitle {
+    Kolde Team
+}
+
+<p class="sectionSubTitle">Leadership</p>
+
+<div id="sortable" class="adminGalleryWrap">
+    @foreach (var item in Model.Item.Where(x => x.Department == "Leadership").OrderBy(x => x.Order))
+    {
+        <div class="adminGalleryItem data" data-id="@item.BaseID" id="row_@item.ID">
+            <div class="adminGalleryImage">
+                <img src="@item.Photo.GetUploadedImagePath(IMCMS.Web.ImageSizes.Crop_200x200)" alt="@item.Fullname" />
+                <div class="adminGalleryOptions">
+                    <a class="adminGalleryEdit" href="@Url.Action("Edit", new { id = item.BaseID })">Edit</a>
+                    <a class="adminGalleryDelete deleteItem">Delete</a>
+                </div>
+            </div>
+            <p class="adminGalleryName">@item.Fullname</p>
+        </div>
+    }
+</div>
+<div class="medSpace">&nbsp;</div>
+<p class="sectionSubTitle">Superintendents</p>
+<div id="sortable" class="adminGalleryWrap">
+    @foreach (var item in Model.Item.Where(x => x.Department == "Superintendent").OrderBy(x => x.Order))
+    {
+        <div class="adminGalleryItem data" data-id="@item.BaseID" id="row_@item.ID">
+            <div class="adminGalleryImage">
+                <img src="@item.Photo.GetUploadedImagePath(IMCMS.Web.ImageSizes.Crop_200x200)" alt="@item.Fullname" />
+                <div class="adminGalleryOptions">
+                    <a class="adminGalleryEdit" href="@Url.Action("Edit", new { id = item.BaseID })">Edit</a>
+                    <a class="adminGalleryDelete deleteItem">Delete</a>
+                </div>
+            </div>
+            <p class="adminGalleryName">@item.Fullname</p>
+        </div>
+    }
+</div>
+
+
+<script>
+    $(function () {
+        $(".adminGalleryWrap").sortable({
+            update: function (event, ui) {
+                $.post('@Url.Action("Order")', $(event.target).sortable('serialize', { key: 'row' }), function (data) {
+                    Admin.Updated();
+                }).fail(function () { alert('Ordering was unsuccessful. Refresh the page and try again.'); });
+            }
+        })
+    })
+</script>

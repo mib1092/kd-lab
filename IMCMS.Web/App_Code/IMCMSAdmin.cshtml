@@ -1,0 +1,153 @@
+﻿@using System.Web.Mvc;
+@using System.Web.Mvc.Html;
+@using System.Linq.Expressions;
+@using IMCMS.Web.Helpers;
+@functions
+{
+    public static HelperResult RightColumnPhotoUpload<TModel, TItem>(HtmlHelper<TModel> html, Expression<Func<TModel, TItem>> expr, IMCMS.Models.Entities.Photo photo, string sectionTitle, string demensions)
+    {
+        return RightColumnPhotoUpload(photo, html.HiddenFor(expr), sectionTitle, demensions, Guid.NewGuid().ToString("N"));
+    }
+
+    public static HelperResult LeftColumnUpload<TModel, TItem>(HtmlHelper<TModel> html, Expression<Func<TModel, TItem>> expr, IMCMS.Models.Entities.Photo photo, string sectionTitle, string demensions)
+    {
+        return LeftColumnUpload(photo, html.HiddenFor(expr), sectionTitle, demensions, Guid.NewGuid().ToString("N"));
+    }
+}
+
+@helper RightColumnPhotoUpload(IMCMS.Models.Entities.Photo photo, HtmlString hiddenFor, string sectionTitle, string demensions, string randomForID)
+{
+    <h4 class="adminRightColumnSectionTitle">@sectionTitle <span class="adminHint">@demensions</span></h4>
+    <div class="adminRightColumnSection" id="uploadSection_@(randomForID)">
+        <a class="addNew @(photo != null ? "hidden" : "")" id="upload_@(randomForID)">Upload</a> <span class="status"></span>
+        <div class="adminRightImageWrap @(photo == null ? "hidden" : "")">
+            <div class="adminRightImage">
+                <img src="@photo.GetUploadedImagePath(IMCMS.Web.ImageSizes.Crop_200x200)" alt="" />
+                @hiddenFor
+                <a class="adminRightClose">&#xf1f8;</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var upload_@(randomForID) = new plupload.Uploader({
+            runtimes: 'html5,flash',
+            browse_button: 'upload_@(randomForID)',
+            max_file_size: '10mb',
+            url: '/SiteAdmin/Photos/Upload',
+            multi_selection: true,
+            flash_swf_url: '/includes/upload/plupload.flash.swf',
+            filters: {
+                mime_types: [{ title: "PDF", extensions: "jpg,png,gif" }]
+            },
+            multipart_params: {
+                '__RequestVerificationToken': $('[name=__RequestVerificationToken]').val()
+            }
+        });
+
+        upload_@(randomForID).init();
+
+        upload_@(randomForID).bind('FilesAdded', function (up, files) {
+            if (up.state != 2 & files.length > 0) {
+                up.start();
+            }
+        });
+
+        upload_@(randomForID).bind('FileUploaded', function (up, file, response) {
+            var data = $.parseJSON(response.response);
+            var browse = $(up.settings.browse_button[0]), imageWrap = browse.siblings('.adminRightImageWrap');
+            browse.siblings('.status').text('');
+            imageWrap.removeClass('hidden');
+            imageWrap.find('img').attr('src', '/assets/images/Crop_200x200/' + data.filename + '.jpg');
+            imageWrap.find('input[type="hidden"]').val(data.ID);
+            browse.addClass('hidden');
+            Admin.setDirty();
+            upload_@(randomForID).refresh();
+        });
+
+
+        upload_@(randomForID).bind('UploadProgress', function (up, file) {
+            var browse = $(up.settings.browse_button[0]);
+            browse.siblings('.status').text(file.percent + "%");
+        });
+
+        upload_@(randomForID).bind('Error', function (up, file) {
+            alert('The upload did not successfully complete.');
+        });
+
+        $('#uploadSection_@(randomForID) .adminRightClose').on('click', function () {
+            var parent = $(this).closest('.adminRightColumnSection');
+            parent.find('.adminRightImageWrap').addClass('hidden');
+            parent.find('.addNew').removeClass('hidden');
+            parent.find('input[type="hidden"]').val('');
+        });
+    </script>
+}
+
+@helper LeftColumnUpload(IMCMS.Models.Entities.Photo photo, HtmlString hiddenFor, string sectionTitle, string demensions, string randomForID)
+{
+    <div class="adminLeftColumnSection" id="uploadSection_@(randomForID)">
+        <a class="addNew @(photo != null ? "hidden" : "")" id="upload_@(randomForID)">Upload</a> <span class="status"></span>
+        <div class="adminLeftImageWrap @(photo == null ? "hidden" : "")">
+            <div class="adminLeftImage">
+                <img src="@photo.GetUploadedImagePath(IMCMS.Web.ImageSizes.Crop_200x200)" alt="" />
+                @hiddenFor
+                <a class="adminLeftClose">&#xf1f8;</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var upload_@(randomForID) = new plupload.Uploader({
+            runtimes: 'html5,flash',
+            browse_button: 'upload_@(randomForID)',
+            max_file_size: '10mb',
+            url: '/SiteAdmin/Photos/Upload',
+            multi_selection: true,
+            flash_swf_url: '/includes/upload/plupload.flash.swf',
+            filters: {
+                mime_types: [{ title: "PDF", extensions: "jpg,png,gif" }]
+            },
+            multipart_params: {
+                '__RequestVerificationToken': $('[name=__RequestVerificationToken]').val()
+            }
+        });
+
+        upload_@(randomForID).init();
+
+        upload_@(randomForID).bind('FilesAdded', function (up, files) {
+            if (up.state != 2 & files.length > 0) {
+                up.start();
+            }
+        });
+
+        upload_@(randomForID).bind('FileUploaded', function (up, file, response) {
+            var data = $.parseJSON(response.response);
+            var browse = $(up.settings.browse_button[0]), imageWrap = browse.siblings('.adminLeftImageWrap');
+            browse.siblings('.status').text('');
+            imageWrap.removeClass('hidden');
+            imageWrap.find('img').attr('src', '/assets/images/Crop_200x200/' + data.filename + '.jpg');
+            imageWrap.find('input[type="hidden"]').val(data.ID);
+            browse.addClass('hidden');
+            Admin.setDirty();
+            upload_@(randomForID).refresh();
+        });
+
+
+        upload_@(randomForID).bind('UploadProgress', function (up, file) {
+            var browse = $(up.settings.browse_button[0]);
+            browse.siblings('.status').text(file.percent + "%");
+        });
+
+        upload_@(randomForID).bind('Error', function (up, file) {
+            alert('The upload did not successfully complete.');
+        });
+
+        $('#uploadSection_@(randomForID) .adminLeftClose').on('click', function () {
+            var parent = $(this).closest('.adminLeftColumnSection');
+            parent.find('.adminLeftImageWrap').addClass('hidden');
+            parent.find('.addNew').removeClass('hidden');
+            parent.find('input[type="hidden"]').val('');
+        });
+    </script>
+}

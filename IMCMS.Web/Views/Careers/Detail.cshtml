@@ -1,0 +1,30 @@
+﻿@model BaseViewModel<Job>
+@{
+  ViewBag.Title = Model.Item.Title + " - Careers";
+}
+<div class="section-job-detail">
+  <div class="center">
+    <div class="job-detail-box">
+      <div class="job-detail-header-box">
+        <h1 class="box-title">@Model.Item.Title</h1>
+        <span class="job-info">@(Model.Item.Specs)&nbsp;&nbsp;&middot;&nbsp;&nbsp;@Model.Item.City, @Model.Item.State</span>
+        <span class="job-link job-link-absolute-right"><a class="right-arrow right-arrow-absolute-right" href="@Url.Action("Apply", "Careers", new { area = "", slug = Model.Item.Slug })">Apply Now</a></span>
+      </div>
+      <div class="content">
+        @Html.Raw(Model.Item.Description)
+        <br />
+        <h2>Why Work at Kolde</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis justo in leo dignissim pellentesque. Aliquam erat volutpat. Praesent vulputate leo et diam tristique facilisis. Proin purus sapien, tincidunt ac mattis vitae, laoreet sit amet tortor. Nam tempor, dui vitae ultrices placerat, enim purus laoreet tellus, eget fringilla leo nisi eu enim. Nullam non faucibus nunc. Vivamus justo erat, ullamcorper vel ex eget, dignissim vehicula nunc.</p>
+      </div>
+      <div class="bnt-box">
+        <a href="/broken" class="right-arrow">Our Projects</a>
+        <a href="/broken" class="right-arrow">About Kolde</a>
+      </div>
+      <div class="content">
+        <h2>Our Equipment</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis justo in leo dignissim pellentesque. Aliquam erat volutpat. Praesent vulputate leo et diam tristique facilisis. Proin purus sapien, tincidunt ac mattis vitae, laoreet sit amet tortor. Nam tempor, dui vitae ultrices placerat, enim purus laoreet tellus, eget fringilla leo nisi eu enim. Nullam non faucibus nunc. Vivamus justo erat, ullamcorper vel ex eget, dignissim vehicula nunc.</p>
+      </div>
+      <a class="btn" href="@Url.Action("Apply", "Careers", new { area = "", slug = Model.Item.Slug })">Apply Now</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+﻿@model AdminBaseViewModel<IEnumerable<Job>>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/DefaultIndex.cshtml";
+}
+@section ModuleTitle {
+    Careers
+}
+
+<div class="sortable">
+    <ul class="navEditorLevel">
+        @foreach (var item in Model.Item.Where(x => !x.IsDefault).OrderBy(x => x.Order))
+        {
+            <li class="data navEditorHandle" id="list_@item.BaseID" data-id="@(item.BaseID)">
+                <div class="navEditorItem @(item.Visbility == VersionableVisbility.Unpublished ? "inactive" : "")">
+                    @item.Title
+                    <span class="" style="float:right;">@(item.Visbility == VersionableVisbility.Unpublished ? "INACTIVE" : "ACTIVE")</span>
+                    <div class="navEditorItemOptionWrap">
+                        <a class="navEditorItemEdit fa fa-pencil" href="@(Url.Action("Edit", new { id = item.BaseID }))"></a>
+                        <a class="navEditorItemDelete fa fa-trash-o"></a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

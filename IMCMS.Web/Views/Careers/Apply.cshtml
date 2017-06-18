@@ -1,0 +1,14 @@
+﻿@model CareersViewModel
+@{
+
+}
+
+@section Head {
+    <script type="text/javascript">
+        (function ($) {
+            $.validator.unobtrusive.adapters.addBool("mandatory", "required");
+        }(jQuery));
+    </script>
+}
+
+@Html.Partial("_ApplyForm")

@@ -1,0 +1,181 @@
+﻿@model CareersViewModel
+@using (Html.BeginForm("Application", "Careers", FormMethod.Post))
+{
+  <div class="formWrap">
+    <div class="formRow">
+      <div class="formModule">
+        @Html.ValidationSummary()
+        @Html.HiddenFor(x => x.IsApplyView)
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule">
+        <label for="jobSelect">position applying for</label>
+        @Html.DropDownListFor(x => x.JobApp.JobID, Model.JobList, "position applying for", new { @class = "jobSelect defaultSelect", @id = "jobSelect", data_val = "true", data_val_required = "Please select a position to apply for." })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule formModule50">
+        <label for="firstName">first name</label>
+        @Html.TextBoxFor(x => x.JobApp.FirstName, new { @class = "defaultInput", @id = "firstName" })
+      </div>
+      <div class="formModule formModule50">
+        <label for="lastName">last name</label>
+        @Html.TextBoxFor(x => x.JobApp.LastName, new { @class = "defaultInput", @id = "lastName" })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule formModule50">
+        <label for="email">email</label>
+        @Html.TextBoxFor(x => x.JobApp.Email, new { @class = "defaultInput", @id = "email", type = "email", data_val = "true", data_val_required = "Please provide an email." })
+      </div>
+      <div class="formModule formModule50">
+        <label for="phone">phone</label>
+        @Html.TextBoxFor(x => x.JobApp.Phone, new { @class = "defaultInput", @id = "phone", type = "tel" })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule">
+        <label for="address">address</label>
+        @Html.TextBoxFor(x => x.JobApp.Address, new { @class = "defaultInput", @id = "address" })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule formModule40">
+        <label for="city">city</label>
+        @Html.TextBoxFor(x => x.JobApp.City, new { @class = "defaultInput", @id = "city" })
+      </div>
+      <div class="formModule formModule40">
+        <label for="state">state</label>
+        @Html.DropDownListFor(x => x.JobApp.State, IMCMS.Web.SelectList.States, "state", new { @class = "defaultSelect", @id = "state" })
+      </div>
+      <div class="formModule formModule20">
+        <label for="zipcode">zipcode</label>
+        @Html.TextBoxFor(x => x.JobApp.ZipCode, new { @class = "defaultInput", @id = "zipcode" })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule formModule70">
+        <label for="license-number">cdl driver's license #</label>
+        @Html.TextBoxFor(x => x.JobApp.DriversLicense, new { @class = "defaultInput", @id = "license-number" })
+      </div>
+      <div class="formModule formModule30">
+        <label for="license-state">cdl license state</label>
+        @Html.DropDownListFor(x => x.JobApp.DriversLicenseState, IMCMS.Web.SelectList.States, "license state", new { @class = "defaultSelect", @id = "license-state" })
+      </div>
+    </div>
+    <div class="formRow">
+      <p class="rowLabelLarge">Have you ever been convicted of a felony?*</p>
+      <div class="formModule">
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.Felony, "True", new { @class = "defaultRadio", id = "Felony_Yes", data_val = "true", data_val_required = "Please verify if you have been convicted of a felony." }) Yes</label>
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.Felony, "False", new { @class = "defaultRadio", id = "Felony_No" }) No</label>
+      </div>
+    </div>
+    <div class="formRow">
+      <p class="rowLabelLarge">Are you legally eligible for work in this country?*</p>
+      <div class="formModule">
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.USAuthorized, "True", new { @class = "defaultRadio", id = "USAuthorized_Yes", data_val = "true", data_val_required = "Please verify your US Residency." }) Yes</label>
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.USAuthorized, "False", new { @class = "defaultRadio", id = "USAuthorized_No" }) No</label>
+      </div>
+    </div>
+    <div class="formRow">
+      <p class="rowLabelLarge">Are you at least 18 years of age?*</p>
+      <div class="formModule">
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.IsEighteen, "True", new { @class = "defaultRadio", id = "IsEighteen_Yes", data_val = "true", data_val_required = "Please verify your age." }) Yes</label>
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.JobApp.IsEighteen, "False", new { @class = "defaultRadio", id = "IsEighteen_No" }) No</label>
+      </div>
+    </div>
+    <div class="formRow">
+      <p class="formHeadline">Job History</p>
+      <div class="formModule">
+        <div class="formRow">
+          @JobHistory(new JobHistory(), 0)
+        </div>
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule">
+        <label class="defaultLabel defaultLabelLarge" for="agree-checkbox">@Html.CheckBoxFor(x => x.JobApp.Agreement, new { @class = "defaultCheckbox", @id = "agree-checkbox", data_val = "true", data_val_mandatory = "You are required to agree to the application and background check." }) I agree to the application and background check agreement.*</label>
+      </div>
+    </div>
+  </div>
+
+  <input type="submit" value="Submit" />
+    @Html.AntiForgeryToken()
+}
+
+@helper JobHistory(JobHistory history, int index)
+{
+  <div class="historyItem">
+    <div class="formRow">
+      <div class="formModule formModule50">
+        <label for="job-start-date-@index">start date (ex. January 2010)</label>
+        @Html.TextBox("JobApp.History[" + index + "].StartDate", "", new { @class = "defaultInput", @id = "job-start-date-" + index })
+      </div>
+      <div class="formModule formModule50">
+        <label for="job-end-date-@index">end date (ex. January 2010, present)</label>
+        @Html.TextBox("JobApp.History[" + index + "].EndDate", "", new { @class = "defaultInput", @id = "job-end-date-" + index })
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formModule formModule50">
+        <label for="company-@index">company</label>
+        @Html.TextBox("JobApp.History[" + index + "].Company", "", new { @class = "defaultInput", @id = "company" + index })
+      </div>
+      <div class="formModule formModule50">
+        <label for="position-@index">position</label>
+        @Html.TextBox("JobApp.History[" + index + "].Position", "", new { @class = "defaultInput", @id = "position" + index })
+      </div>
+    </div>
+    <div class="formRow">
+      <p class="rowLabel">job description</p>
+      <div class="formModule">
+        <label for="brief-description-@index">give a brief description of your duties</label>
+        @Html.TextArea("JobApp.History[" + index + "].Description", "", new { @class = "defaultTextarea", @id = "brief-description" + index })
+        @Html.Hidden("JobApp.History.Index", index)
+      </div>
+    </div>
+    <a href="javascript:;" class="addJob">Add Another Job</a>
+  </div>
+}
+<script type="text/x-handlebars-template" id="history-template">
+  @JobHistory(new JobHistory(), -1);
+</script>
+
+<script type="text/javascript">
+  $(function () {
+    $("#historyList").on("click", ".addJob", function (e) {
+      $(this).css("display", "none");
+      e.preventDefault();
+      var ticks = Math.floor(Math.random() * (2147483640 - 21474800 + 1)) + 21474800;
+      var template = $($.trim($("#history-template").html().replace(/\[-1]/g, '[' + ticks + ']')));
+      template.find('[name*="Index"]').val(ticks);
+
+      $("#historyList").append(template);
+    });
+    $(".jobSelect").change(function (e) {
+      var val = $(this).val();
+      var text = $(this).find("option:selected").text();
+      if (val != "") {
+        $.post('@Url.Action("GetJobType")', { 'id': val, 'text': text }, function (data) {
+          displayValue(data.type);
+        });
+      } else {
+        displayValue("empty");
+      }
+    });
+
+    function displayValue(type) {
+      
+      if (type != "Driving") {
+          $("#license-state, #license-number").val("");
+          $("#license-number").closest(".formRow").css("display", "none");
+      }
+      else {
+          $("#license-number").closest(".formRow").css("display", "block");
+      }
+      if (type == "") $("#license-state").val("");
+    }
+
+  });
+</script>

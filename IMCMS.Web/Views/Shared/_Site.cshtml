@@ -1,0 +1,203 @@
+﻿@model BaseViewModel
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="no-js" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@(ViewBag.Title != null ? String.Format("{0} - Kolde Construction, Inc.", ViewBag.Title) : "Kolde Construction, Inc.")</title>
+  <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/touch-icon-120.gif" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/touch-icon-152.gif" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/touch-icon-180.gif" />
+  @Styles.Render("~/bundles/css/eui")
+  @Scripts.Render("~/bundles/js/jquery", "~/bundles/js/eui")
+  @RenderSection("Head", required: false)
+  @if (User.Identity.IsAuthenticated)
+  { @Styles.Render("~/bundles/css/adminnav") }
+  <link href="/includes/css/print.css" type="text/css" rel="stylesheet" media="print" />
+</head>
+<body>
+  <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+  @if (Model == null && Request.IsLocal)
+  { <p style="font-weight: bold; color: #f00;">Danger: no model. Make sure you're inheriting `BaseController`</p> }
+  <div class="fullWrap @(User.Identity.IsAuthenticated ? "adminCollapsed" : "")">
+    <a class="jumpToContent" href="#bodyWrap">Skip Navigation</a>
+    @if (User.Identity.IsAuthenticated)
+    { @Html.Partial("AdminNav") }
+    <div class="navigationWrap">
+      <div class="navigationWedge">&nbsp;</div>
+      <div class="center">
+        <a class="siteLogo" href="/" title="Return to Homepage"><img src="~/images/kolde-construction.png" alt="Logo for Kolde Construction, Inc."></a>
+        <ul class="navigation">
+          <li>
+            <a href="/broken" class="open-overlay prevent">Services</a>
+            <div class="submenu-overlay">
+              <a href="#" class="close-overlay prevent"></a>
+              <div class="submenu-box">
+                <div class="submenu-cell">
+                  <div class="center">
+                    <span class="subnav-title">Our Services</span>
+                    <div class="left-box">
+                      <ul class="subnav">
+                        <li><a href="/broken">Structural Foundations</a></li>
+                        <li><a href="/broken">Concrete Pumping</a></li>
+                        <li><a href="/broken">Interior Flatwork</a></li>
+                        <li><a href="/broken">Sitework</a></li>
+                        <li><a href="/broken">Mudjacking</a></li>
+                        <li><a href="/broken">Demolition</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-box inverse">
+                      <div class="content">
+                        <p>We place concrete. From pouring to flatwork, pumping to finishing, we work with the best equipment and people in the business. We poured our first foundation in 1983 and have built our business one job, one customer, one success at a time.</p>
+                      </div>
+                      <a href="/broken" class="btn inverse">get an estimate</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li><a href="/broken">Projects</a></li>
+          <li>
+            <a href="/careers" class="open-overlay prevent">Careers</a>
+            <div class="submenu-overlay">
+              <a href="#" class="close-overlay prevent"></a>
+              <div class="submenu-box">
+                <div class="submenu-cell">
+                  <div class="center">
+                    <span class="subnav-title">Careers</span>
+                    <div class="left-box">
+                      <ul class="subnav">
+                        <li><a href="/broken">Start Your Career</a></li>
+                        <li><a href="/broken">Stats</a></li>
+                        <li><a href="/broken">Testimonials</a></li>
+                        <li><a href="/broken">Open Positions</a></li>
+                        <li><a href="/broken">Apply Now</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-box inverse">
+                      <div class="content">
+                        <p>We place concrete. From pouring to flatwork, pumping to finishing, we work with the best equipment and people in the business. We poured our first foundation in 1983 and have built our business one job, one customer, one success at a time.</p>
+                      </div>
+                      <a href="/broken" class="btn inverse">get an estimate</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <a href="/about" class="open-overlay prevent">About</a>
+            <div class="submenu-overlay">
+              <a href="#" class="close-overlay prevent"></a>
+              <div class="submenu-box">
+                <div class="submenu-cell">
+                  <div class="center">
+                    <span class="subnav-title">About</span>
+                    <div class="left-box">
+                      <ul class="subnav" aria-hidden="true">
+                        <li><a href="/broken">Our History</a></li>
+                        <li><a href="/broken">Our Leadership</a></li>
+                        <li><a href="/broken">From the President</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-box inverse">
+                      <div class="content">
+                        <p>We place concrete. From pouring to flatwork, pumping to finishing, we work with the best equipment and people in the business. We poured our first foundation in 1983 and have built our business one job, one customer, one success at a time.</p>
+                      </div>
+                      <a href="/broken" class="btn inverse">Get an Estimate</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li><a href="/broken">Contact</a></li>
+        </ul>
+        <a class="navigationRight" href="/broken">Apply Now</a>
+      </div>
+    </div>
+    @RenderBody()
+    <div class="footerWrap">
+      <div class="footerPageWrap">
+        <a class="footerPage" href="/broken">
+          <span class="footerPageWedge"><img src="~/images/fl.jpg" alt="placeholder" /></span>
+          <span class="footerPageContainer">
+            <span class="footerPageInner">
+              <span class="footerPageHeadline">Start your career, join the crew.</span>
+              <span class="footerPageCTA">Open Positions</span>
+            </span>
+          </span>
+        </a>
+        <a class="footerPage footerPageAlt" href="/broken">
+          <span class="footerPageWedge"><img src="~/images/fr.jpg" alt="placeholder" /></span>
+          <span class="footerPageContainer">
+            <span class="footerPageInner">
+              <span class="footerPageHeadline">On time, every time. Guaranteed.</span>
+              <span class="footerPageCTA">Explore Services</span>
+            </span>
+          </span>
+        </a>
+      </div>
+      <div class="footerMainWrap">
+        <div class="center">
+          <div class="footerColumn">
+            <p class="footerHeadingSmall">Phone</p>
+            <p class="footerContact">(785) 437-3730</p>
+            <p class="footerHeadingSmall">Email</p>
+            <p class="footerContact"><a href="mailto:info@koldeconcrete.com">info@koldeconcrete.com</a></p>
+            <p class="footerHeadingSmall">Follow Kolde</p>
+            <div class="footerSocialWrap">
+              <a class="footerSocial footerSocialFB" href="/broken" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+              <a class="footerSocial footerSocialIN" href="/broken" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+              <a class="footerSocial footerSocialGP" href="/broken" title="Google Plus"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+            </div>
+          </div>
+          <div class="footerColumn">
+            <a class="footerHeading" href="/broken">Services</a>
+            <a class="footerNavLink" href="/broken">Structural/Foundation</a>
+            <a class="footerNavLink" href="/broken">Concrete Pumping</a>
+            <a class="footerNavLink" href="/broken">Interior Flatwork</a>
+            <a class="footerNavLink" href="/broken">Exterior Flatwork</a>
+            <a class="footerNavLink" href="/broken">Curb and Gutter/Paving</a>
+            <a class="footerNavLink" href="/broken">Mudjacking</a>
+          </div>
+          <div class="footerColumn">
+            <a class="footerHeading" href="/broken">Careers</a>
+            <a class="footerNavLink" href="/broken">Start Your Career</a>
+            <a class="footerNavLink" href="/broken">Stats</a>
+            <a class="footerNavLink" href="/broken">Testimonials</a>
+            <a class="footerNavLink" href="/broken">Open Positions</a>
+            <a class="footerNavLink" href="/broken">Apply Now</a>
+          </div>
+          <div class="footerColumn">
+            <a class="footerHeading" href="/broken">About</a>
+            <a class="footerNavLink" href="/broken">Our History</a>
+            <a class="footerNavLink" href="/broken">Our Leadership</a>
+            <a class="footerNavLink" href="/broken">From the President</a>
+          </div>
+          <div class="footerColumn">
+            <a class="footerHeading" href="/broken">Join the Crew</a>
+            <a class="footerCTA" href="/broken">Apply Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="copyrightWrap">
+        <div class="center">
+          <div class="copyrightLeft">
+            <a href="/broken">Schedule Login</a>
+            <a href="/broken">Employee Portal</a>
+          </div>
+          <p class="copyrightRight">&copy; Kolde Construction&nbsp;&nbsp;&middot;&nbsp;&nbsp;All Rights Reserved&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="http://www.imagemakers-inc.com" target="_blank">Development by Imagemakers</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (User.Identity.IsAuthenticated)
+  { @Scripts.Render("~/bundles/js/adminnav") }
+  @Html.GoogleAnalytics()
+  @StackExchange.Profiling.MiniProfiler.RenderIncludes()
+  @RenderSection("Footer", false)
+</body>
+</html>

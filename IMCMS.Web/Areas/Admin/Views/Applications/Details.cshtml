@@ -1,0 +1,95 @@
+﻿@model AdminBaseViewModel<JobApplication>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/DefaultEdit.cshtml";
+}
+
+@section ModuleTitle {
+    Application Detail
+}
+@section ModuleTitleLink {
+    <a class="backLink" href="@Model.ListPage">back</a>
+}
+
+
+<table class="displayTable">
+    <thead>
+        <tr><th colspan="2" style="border:none;">&nbsp;</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Date Submitted</td>
+            <td>@Model.Item.Submitted.ToString("yyyy-MM-dd hh:mm tt")</td>
+        </tr>
+        <tr><td>Job ID #</td>
+            <td>@Model.Item.AppJobID</td>
+        </tr>
+        <tr><td>Applying For</td>
+            <td>@Model.Item.Job.Title</td>
+        </tr>
+        <tr><td>First Name</td>
+            <td>@Model.Item.FirstName</td>
+        </tr>
+        <tr><td>Last Name</td>
+            <td>@Model.Item.LastName</td>
+        </tr>
+        <tr><td>Address</td>
+            <td>@Model.Item.Address</td>
+        </tr>
+        <tr><td>City</td>
+            <td>@Model.Item.City</td>
+        </tr>
+        <tr><td>State</td>
+            <td>@Model.Item.State</td>
+        </tr>
+        <tr><td>Zip</td>
+            <td>@Model.Item.ZipCode</td>
+        </tr>
+        <tr><td>Phone</td>
+            <td>@Model.Item.Phone</td>
+        </tr>
+        <tr><td>Email</td>
+            <td>@Model.Item.Email</td>
+        </tr>
+        @if (Model.Item.Job.JobType == JobType.Driving)
+        {
+            <tr>
+                <td>CDL Drivers License #</td>
+                <td>@Model.Item.DriversLicense / @Model.Item.DriversLicenseState</td>
+            </tr>
+        }
+        <tr><td>Felony Conviction?</td>
+            <td>@(Model.Item.Felony == null ? "N/A" : Model.Item.Felony.Value ? "Yes" : "No")</td>
+        </tr>
+        <tr><td>Authorized in US?</td>
+            <td>@(Model.Item.USAuthorized == null ? "N/A" : Model.Item.USAuthorized.Value ? "Yes" : "No")</td>
+        </tr>
+        <tr><td>Is over 18?</td>
+            <td>@(Model.Item.IsEighteen == null ? "N/A" : Model.Item.IsEighteen.Value ? "Yes" : "No")</td>
+        </tr>
+        <tr><td>Job History</td>
+            <td>
+                @foreach (var item in Model.Item.History)
+                {
+                    <div class="historyItem">
+                   <p>@item.StartDate - @item.EndDate</p>
+                   <p>@(item.Company), @item.Position</p>
+                   <p>Description: @item.Description</p>
+                    </div>
+                }
+            </td>
+        </tr>
+        <tr><td>Notes</td>
+            <td>@Html.TextAreaFor(x => x.Item.Notes, new { @class = "defaultTextarea" })</td>
+        </tr>
+        <tr><td>Status</td>
+            <td>@Html.DropDownListFor(x => x.Item.Status, new SelectList(new Dictionary<string, string>
+                {
+                    {"New", "New"},
+                    {"Approved", "Approved"},
+                    {"Rejected", "Rejected"},
+                    {"Archived", "Archived"},
+                    {"Prescreened", "Prescreened"},
+                    {"In Considertation", "InConsideration"}
+                }, "Value", "Key"), new { @class = "defaultSelect" })</td>
+        </tr>
+    </tbody>
+</table>

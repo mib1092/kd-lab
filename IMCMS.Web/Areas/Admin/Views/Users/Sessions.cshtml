@@ -1,0 +1,46 @@
+﻿@using IMCMS.Models.Entities
+@model AdminBaseViewModel<IEnumerable<AdminUserSession>>
+@{
+    ViewBag.Title = "Sessions - Users - Admin";
+}
+
+@section PageTitle {
+    <h1>Sessions</h1>
+}
+@section Buttons {
+    <a class="save doSave" href="#expire">Expire All Session For This User</a>
+    <input type="hidden" name="username" value="@ViewBag.Username"/>
+}
+<div class="smallSpace">&nbsp;</div>
+<p>Not all sessions listed here are active by the user. This reports all login sessions that have been created for this user.</p>
+<table class="restoreTable" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <th>Session ID</th>
+            <th>IP</th>
+            <th>Started When</th>
+            @*<th>Role(s)</th>*@
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model.Item)
+            {
+                <tr>
+                    <td>
+                        @item.CookieGuid
+                    </td>
+                    <td>
+                        @item.IP
+                    </td>
+                    @*<td>
+                        @String.Join(", ",item.Roles.Select(x => x.Name))
+                    </td>*@
+                    <td>
+                        @item.Created
+                    </td>
+
+                </tr>
+            }
+
+    </tbody>
+</table>

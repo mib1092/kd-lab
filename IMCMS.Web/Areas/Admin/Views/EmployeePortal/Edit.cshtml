@@ -1,0 +1,49 @@
+﻿@model AdminBaseViewModel<EmployeePortalPage>
+@{
+    ViewBag.Title = "Employee Portal Page Editor";
+    Layout = "~/Areas/Admin/Views/Shared/DefaultEdit.cshtml";
+}
+
+@{ 
+    var parentList = (List<SelectListItem>)ViewBag.ParentSelect;
+    
+}
+@section ModuleTitleLink {
+    <a class="backLink" href="@Model.ListPage">back</a>
+}
+@section ModuleTitle {
+    Employee Portal Page
+    }
+
+@Html.HiddenFor(x => x.Item.PageType)
+
+@if (Model.Item.ID == 0 || Model.Item.ParentId != null)
+{
+    <p class="formDesc">
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.Item.Visbility, VersionableVisbility.Public, new { @class = "defaultRadio", id = "VersionableVisbility_Show" }) Show in Nav</label>
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.Item.Visbility, VersionableVisbility.Unlinked, new { @class = "defaultRadio", id = "VersionableVisbility_Hide" }) Hide from Nav</label>
+        <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.Item.Visbility, VersionableVisbility.Unpublished, new { @class = "defaultRadio", id = "VersionableVisbility_Unpublished" })Unpublished</label>
+    </p>
+
+    <p class="formDesc">Parent*</p>
+    @Html.DropDownListFor(x => x.Item.ParentId, parentList, "Select Parent...", new { @class = "defaultSelect", data_val = "true", data_val_required = "A parent must be selected." })
+}
+
+<p class="formDesc">Title*</p>
+@Html.TextBoxFor(x => x.Item.Title, new { @class = "defaultInput" })
+
+@if (Model.Item.ID == 0 || Model.Item.ParentId != null)
+{
+    if (Model.Item.PageType == PortalType.Standard)
+    {
+        <p class="formDesc">Description</p>
+        @Html.TextAreaFor(x => x.Item.Content, new { @class = "defaultTextarea defaultTextareaHTMLFull HTMLeditor" })
+    }
+    else
+    {
+        <p class="formDesc">Redirect Url</p>
+        @Html.TextBoxFor(x => x.Item.RedirectUrl, new { @class = "defaultInput" })
+        <label class="defaultLabel defaultLabelCheckbox">@Html.CheckBoxFor(x => x.Item.IsNewWindow, new { @class = "defaultCheckbox" }) Open in new window? </label>
+    }
+}
+

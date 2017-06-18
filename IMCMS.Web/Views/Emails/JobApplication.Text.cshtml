@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Emails/_HtmlTemplate.cshtml";
+    var item = (JobApplication)ViewBag.Model;
+}
+
+Submitted: @item.Submitted.ToString("yyyy-MM-dd hh:mm tt")
+Job ID #: @item.AppJobID
+Applying For: @item.Job.Title
+First Name: @item.FirstName
+Last Name: @item.LastName
+Address: @item.Address
+City: @item.City
+State: @item.State
+Zip: @item.ZipCode
+Phone: @item.Phone
+Email: @item.Email
+@if (item.Job.JobType == JobType.Driving)
+{
+    @:CDL Drivers License #: @item.DriversLicense / @item.DriversLicenseState
+}
+Felony Conviction?: @(item.Felony == null ? "N/A" : item.Felony.Value ? "Yes" : "No")
+Authorized in US?: @(item.USAuthorized == null ? "N/A" : item.USAuthorized.Value ? "Yes" : "No")
+Is over 18?: @(item.IsEighteen == null ? "N/A" : item.IsEighteen.Value ? "Yes" : "No")
+Job History:
+@foreach (var job in item.History)
+{
+        @:@job.StartDate - @job.EndDate
+        @:@(job.Company), @job.Position
+        @:Description: @job.Description
+}

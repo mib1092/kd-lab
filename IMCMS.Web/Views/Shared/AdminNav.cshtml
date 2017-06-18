@@ -1,0 +1,74 @@
+﻿@model BaseViewModel
+@functions {
+    public string ActiveClass(params ActiveSection[] linkActionSection)
+    {
+        if (Model == null || !Model.AdminBar.ActiveSection.HasValue)
+            return null;
+
+        if (linkActionSection.Contains(Model.AdminBar.ActiveSection.Value))
+        {
+            return "active";
+        }
+
+        return null;
+    }
+
+    public bool CanSee(params string[] roles)
+    {
+        if (User.IsInRole(Constants.ROLE_USERS_IM))
+            return true;
+        foreach(var item in roles)
+        {
+            if (User.IsInRole(item))
+                return true;
+        }
+
+        return false;
+    }
+}
+<div class="adminNavWrap">
+  <div class="adminNavInner">
+    <a class="adminNavCollapseTrigger" href="#"><span class="fa fa-fw fa-angle-left"></span></a>
+    @if (Model != null && Model.AdminBar.EditURL.IsNotNullOrEmpty())
+    {
+      <a class="adminNavLink adminNavEditPage" href="@Model.AdminBar.EditURL"><span class="fa fa-pencil fa-fw"></span>Edit Page</a>
+    }
+
+      <a class="adminNavLink @ActiveClass(ActiveSection.Applications)" href="@Url.Action("Index", "Applications", new { area = "Admin" })"><span class="fa fa-archive fa-fw"></span>Applications @(Model.AdminBar.NewAppCount > 0 ? "(" + Model.AdminBar.NewAppCount.ToString() + ")" : "")</a>
+      <a class="adminNavLink @ActiveClass(ActiveSection.Careers)" href="@Url.Action("Index", "Careers", new { area = "Admin" })"><span class="fa fa-briefcase fa-fw"></span>Careers</a>
+      <a class="adminNavLink @ActiveClass(ActiveSection.Team)" href="@Url.Action("Index", "Team", new { area = "Admin" })"><span class="fa fa-users fa-fw"></span>Kolde Team</a>
+      <a class="adminNavLink @ActiveClass(ActiveSection.Portal)" href="@Url.Action("Index", "EmployeePortal", new { area = "Admin" })"><span class="fa fa-sitemap fa-fw"></span>Employee Portal</a>
+      <a class="adminNavLink @ActiveClass(ActiveSection.Forms)" href="@Url.Action("Index", "Forms", new { area = "Admin" })"><span class="fa fa-file-text fa-fw"></span>Forms</a>
+
+      @if (CanSee(Constants.ROLE_USERS))
+      {
+    <a class="adminNavLink @(ActiveClass(ActiveSection.Users))" href="@Url.Action("Index", "Users", new { area = "Admin" })"><span class="fa fa-user fa-fw"></span>Users</a>
+      }
+
+    <div class="adminNavBottomLinks">
+      <a class="adminNavLink" href="/" target="_blank"><span class="fa fa-external-link fa-fw"></span>View Site</a>
+      <a class="adminNavLink" href="@Url.Action("Logout", "Account", new { area = "Admin" })"><span class="fa fa-sign-out fa-fw"></span>Sign Out</a>
+    </div>
+      <a class="adminNavImagemakers" href="http://imagemakers-inc.com" target="_blank">ADMIN v2.0</a>
+  </div>
+</div>
+
+
+
+@* use this code for pull out navigation *@
+@* <a class="adminNavLink @(ActiveClass(ActiveSection.MainPage))" href="#" data-showadminsubnav="main-page"><span class="fa fa-flag fa-fw"></span>Main Page</a> *@
+@*<div class="adminSubnavWrap" data-adminsubnav="clubs">
+    <a class="adminSubnavLink" href="@Url.Action("List", "Club", new { area = "Admin", id = item.ID }) "><span class="fa fa-chevron-right fa-fw"></span>@item.Name</a>
+    <div class="closeAdminSubnav">X</div>
+</div>*@
+
+<div class="adminNavWrapCollapsed">
+  @if (Model != null && Model.AdminBar.EditURL.IsNotNullOrEmpty())
+  {
+    <a class="adminNavLink adminNavEditPage" href="@Model.AdminBar.EditURL" title="Edit this Page"><span class="fa fa-pencil fa-fw"></span></a>
+  }
+  <a class="adminNavLink" href="/broken" title="See Full Menu" id="adminNavExpand"><span class="fa fa-navicon fa-fw"></span></a>
+  <div class="adminNavBottomLinks">
+    <a class="adminNavLink adminNavSignOut" href="@Url.Action("Logout", "Account", new { area = "Admin" })" title="Sign Out"><span class="fa fa-sign-out fa-fw"></span></a>
+  </div>
+</div>

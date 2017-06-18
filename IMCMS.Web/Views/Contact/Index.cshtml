@@ -1,0 +1,77 @@
+﻿@model BaseViewModel<Contact>
+@{
+  ViewBag.Title = "Contact Us";
+}
+<div class="section-contact" id="bodyWrap">
+  <div class="center">
+    <h1 class="section-title">Contact</h1>
+    <ul class="contact-page-list">
+      <li>
+        <div class="contact-box">
+          <span class="contact-title">Phone</span>
+          <p class="contact-info"><a href="tel:+17854373730">(785) 437-3730</a></p>
+        </div>
+        <div class="contact-box">
+          <span class="contact-title">Email</span>
+          <p class="contact-info"><a href="mailto:info@koldeconcrete.com">info@koldeconcrete.com</a></p>
+        </div>
+        <div class="contact-box">
+          <span class="contact-title">st. Marys location</span>
+          <p class="contact-info">28630 US Hwy 24, <br />St. Marys, KS 66536</p>
+        </div>
+        <div class="contact-box">
+          <span class="contact-title">Manhattan location</span>
+          <p class="contact-info">9026 Green Valley Drive <br />Manhattan, KS 66502</p>
+        </div>
+      </li>
+      <li>
+        <span class="contact-title">Get a Free Estimate</span>
+
+        @using (Html.BeginForm())
+        {
+          <div class="form-box">
+            <div>
+              @Html.ValidationSummary()
+            </div>
+            <form>
+              <ul class="form-list">
+                <li>
+                  <div class="input-wrap">
+                    @Html.TextBoxFor(x => x.Item.Name, new { @class = "input-style", data_val = "true", data_val_required = "Please provide a name value." })
+                    <label for="name">name</label>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-wrap">
+                    @Html.TextBoxFor(x => x.Item.Email, new { @class = "input-style", type = "email", data_val = "true", data_val_required = "Please provide an email." })
+                    <label for="email">email</label>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-wrap">
+                    @Html.TextBoxFor(x => x.Item.Phone, new { @class = "input-style", type = "tel", data_val = "true", data_val_required = "Please provide a phone number." })
+                    <label for="phone">phone</label>
+                  </div>
+                </li>
+                <li>
+                  <label class="defaultLabel defaultLabelCheckbox"><input type="checkbox" class="defaultCheckbox" name="Contact_Types" value="Estimating Department" /> Estimating Department</label>
+                  <label class="defaultLabel defaultLabelCheckbox"><input type="checkbox" class="defaultCheckbox" name="Contact_Types" value="Concrete Pumping" /> Concrete Pumping</label>
+                  <label class="defaultLabel defaultLabelCheckbox"><input type="checkbox" class="defaultCheckbox" name="Contact_Types" value="Human Resources/Employment" /> Human Resources/Employment</label>
+                </li>
+                <li>
+                  <div class="input-wrap">
+                    @Html.TextAreaFor(x => x.Item.Message, new { @class = "input-style", placeholder = "Tell us about your project" })
+                    <label for="message" class="show">Message</label>
+                  </div>
+                </li>
+              </ul>
+              <div class="form-btn-box">
+                <button type="submit" class="btn">Submit</button>
+              </div>
+            </form>
+          </div>
+        }
+      </li>
+    </ul>
+  </div>
+</div>

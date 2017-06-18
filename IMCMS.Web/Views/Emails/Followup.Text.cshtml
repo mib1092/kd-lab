@@ -1,0 +1,7 @@
+﻿
+@{
+    Layout = "~/Views/Emails/_HtmlTemplate.cshtml";
+    var text = IMCMS.Common.Extensions.StringExtensions.StripHtml(ViewBag.Content);
+}
+
+@text

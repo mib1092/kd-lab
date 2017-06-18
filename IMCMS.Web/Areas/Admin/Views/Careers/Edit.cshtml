@@ -1,0 +1,91 @@
+﻿@model AdminBaseViewModel<Job>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/DefaultEdit.cshtml";
+}
+
+@section ModuleTitle {
+    Edit Career    
+}
+@section ModuleTitleLink {
+    <a href="@Model.ListPage" class="backLink">Back</a>
+}
+
+<p class="formDesc">
+    <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.Item.Visbility, VersionableVisbility.Public, new { @class = "defaultRadio", id = "VersionableVisbility_Show" }) Active</label>
+    <label class="defaultLabel defaultLabelRadio defaultLabelInline">@Html.RadioButtonFor(x => x.Item.Visbility, VersionableVisbility.Unpublished, new { @class = "defaultRadio", id = "VersionableVisbility_Unpublished" }) Inactive</label>
+</p>
+
+<p class="formDesc">Job Type*</p>
+@Html.DropDownListFor(x => x.Item.JobType, EnumHelper.GetSelectList(typeof(JobType)), "Select Job Type...", new { @class = "defaultSelect" })
+
+<p class="formDesc">Job Title</p>
+@Html.TextBoxFor(x => x.Item.Title, new { @class = "defaultInput" })
+
+<div class="inlineFormField">
+    <p class="formDesc">City</p>
+    @Html.TextBoxFor(x => x.Item.City, new { @class = "defaultInput" })
+</div>
+
+<div class="inlineFormField last">
+    <p class="formDesc">State</p>
+    @Html.DropDownListFor(x => x.Item.State, IMCMS.Web.SelectList.States, new { @class = "defaultSelect" })
+</div>
+
+<div class="inlineFormField">
+    <p class="formDesc">Specs</p>
+    @Html.TextBoxFor(x => x.Item.Specs, new { @class = "defaultInput" })
+</div>
+<div class="inlineFormField last">
+    <p class="formDesc">Job ID#</p>
+    @Html.TextBoxFor(x => x.Item.JobID, new { @class = "defaultInput" })
+</div>
+
+<p class="formDesc">Short Description <span class="adminHint">appears on job listing page only</span></p>
+@Html.TextAreaFor(x => x.Item.Summary, new { @class = "defaultTextarea", style = "height:150px" })
+
+<p class="formDesc">Long Description</p>
+@Html.TextAreaFor(x => x.Item.Description, new { @class = "HTMLeditor", data_toolbar = "basic" })
+
+@section RightColumn {
+    <div class="adminRightColumnInner adminRightColumnInnerNoHead">
+        <h4 class="adminRightColumnSectionTitle">Listing Options</h4>
+        <div class="adminRightColumnSection">
+            <label class="defaultLabel defaultLabelCheckbox">@Html.CheckBoxFor(x => x.Item.ListOnWebsite, new { @class = "defaultCheckbox" }) List on Website</label>
+            <label class="defaultLabel defaultLabelCheckbox">@Html.CheckBoxFor(x => x.Item.ListOnIndeed, new { @class = "defaultCheckbox" }) List on Indeed</label>
+        </div>
+        <section id="indeedSection" class="@(Model.Item.ListOnIndeed ? "" : "hidden")">
+            <h4 class="adminRightColumnSectionTitle">Indeed Info <span class="adminHint">only shown on Indeed</span></h4>
+            <div class="adminRightColumnSection">
+                <p class="formDesc">Date Posted</p>
+                @Html.TextBoxFor(x => x.Item.IndeedDate, "{0:MM/dd/yyyy}", new { @class = "defaultInput" })
+                <p class="formDesc">Indeed Reference Number <span class="tooltipWrap fa-stack"><i class="fa fa-fw fa-circle-o fa-stack-2x"></i><i class="fa fa-fw fa-info fa-stack-1x"></i></span><span class="tooltipFlag">You can change the date and reference number and it will refresh the job on indeed.</span></p>
+                @Html.TextBoxFor(x => x.Item.IndeedRef, new { @class = "defaultInput" })
+                <p class="formDesc">Postal Code</p>
+                @Html.TextBoxFor(x => x.Item.PostalCode, new { @class = "defaultInput", placeholder = "ex. 88888-8888" })
+                <p class="formDesc">Hours</p>
+                @Html.TextBoxFor(x => x.Item.Hours, new { @class = "defaultInput", placeholder = "ex. Monday - Thursday 8:00am - 5:00pm" })
+                <p class="formDesc">Wage</p>
+                @Html.TextBoxFor(x => x.Item.Wage, new { @class = "defaultInput", placeholder = "ex. $60K/year" })
+                <p class="formDesc">Education</p>
+                @Html.TextBoxFor(x => x.Item.Education, new { @class = "defaultInput", placeholder = "ex. Associates Degree" })
+                <p class="formDesc">Category</p>
+                @Html.TextBoxFor(x => x.Item.Category, new { @class = "defaultInput", placeholder = "ex. CDL Driver" })
+                <p class="formDesc">Experience</p>
+                @Html.TextBoxFor(x => x.Item.Experience, new { @class = "defaultInput", placeholder = "ex. 3+ years" })
+            </div>
+        </section>
+    </div>
+}
+
+<script>
+    $(function () {
+        $("#Item_JobType").find("option").each(function () {
+            $(this).text($(this).text().replace("_", "-"));
+        })
+        $("#Item_ListOnIndeed").click(function (e) {
+            
+            if ($(this).prop("checked")) $("#indeedSection").removeClass("hidden");
+            else $("#indeedSection").addClass("hidden");
+        });
+    });
+</script>

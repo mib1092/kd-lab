@@ -1,0 +1,10 @@
+﻿@model IMCMS.Models.Entities.EmployeePortalPage
+@{
+    ViewBag.Title = "Employee Portal - " + Model.Title;
+}
+
+<div class="contentWrap defaultPadding">
+    <div class="center">
+        @Html.Raw(Model.Content)
+    </div>
+</div>

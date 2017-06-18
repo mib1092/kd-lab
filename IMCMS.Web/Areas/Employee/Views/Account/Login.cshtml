@@ -1,0 +1,15 @@
+﻿@model IMCMS.Web.Areas.Employee.ViewModel.LoginModel
+@{ 
+    ViewBag.Title = "Employee Portal Login";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+
+    @Html.PasswordFor(x => x.Password, new { @class = "defaultInput defaultInputPassword", placeholder = "enter password" })
+    <input type="submit" class="defaultCTA" value="Login" />
+
+    @Html.AntiForgeryToken()
+}
+

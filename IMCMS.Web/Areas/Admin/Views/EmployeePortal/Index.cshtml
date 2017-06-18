@@ -1,0 +1,152 @@
+﻿@model EmployeePortalViewModel
+@{
+    ViewBag.Title = "Employee Portal Settings";
+    
+}
+@section Buttons {
+    <button class="topBarLink topBarSave"><span class="fa fa-save"></span>Save</button>
+    <a class="topBarLink topBarCancel" href="/siteadmin/employeeportal"><span class="fa fa-close"></span>Cancel</a>
+}
+@section PageTitle {
+    <h1>Employee Portal Settings</h1>
+}
+<div class="adminContentWrap">
+    <div class="adminContentTable">
+        <div class="adminLeftColumn">
+
+            <p class="formDesc">Employee Portal Passcode</p>
+            <input type="text" class="defaultInput" name="Item.Password" value="@IMCMS.Common.Hashing.AESEncrypt.DeCrypt(Model.Item.Password)" />
+            <p class="formDesc">Intro Headline</p>
+            @Html.TextBoxFor(x => x.Item.Headline, new { @class = "defaultInput" })
+            <p class="formDesc">Intro Short Description</p>
+            @Html.TextAreaFor(x => x.Item.Description, new { @class = "defaultTextarea" })
+
+            <div class="bottomButtonWrap">
+                <button class="save">Save</button>
+                <a class="cancel" href="/siteadmin/employeeportal">Cancel</a>
+            </div>
+            <div class="medSpace">&nbsp;</div>
+            <p class="sectionTitle"><span class="sectionSubTitle" style="display:inline-block;bottom:7px;">Pages</span> <a class="save" href="@Url.Action("Create")">Add Page</a> <a class="addNew addNewAlt" href="@Url.Action("Create", new { t = 1 })">Add Redirect&nbsp;&nbsp;&nbsp;&nbsp;<span class="fa fa-file-o fa-stack-1x" style="left:55px;"><span class="fa fa-mail-forward fa-stack-1x"></span></span></a></p>
+            <div class="smallSpace">&nbsp;</div>
+            <div class="sortable">
+            <ul class="navEditorLevel">
+
+                @foreach (var item in Model.Pages)
+                {
+
+                    <li class="data navEditorHandle" id="list_@item.BaseID">
+                        <div class="navEditorItem">
+                            @item.Title
+                            <div class="navEditorItemOptionWrap">
+                                <a class="navEditorItemEdit fa fa-pencil" href="@(string.IsNullOrEmpty(item.RedirectUrl) ? Url.Action("Edit", new { id = item.BaseID }) : Url.Action("Edit", new { id = item.BaseID, t = 1 }))"></a>
+                            </div>
+                        </div>
+                    
+                        @{
+                            List<EmployeePortalPage> list = new List<EmployeePortalPage>();
+                        }
+                        @if (item.Children != null && item.Children.Any())
+                        {
+                            list = item.Children.Where(x => x.Status == VersionableItemStatus.Live && x.Visbility == VersionableVisbility.Public).OrderBy(x => x.Order).ToList();
+                        }
+
+                        @if (list.Any())
+                        {
+                            <ul class="navEditorLevel">
+                    
+                                @foreach (var child in list)
+                                {
+                                <li class="data navEditorHandle" id="list_@child.BaseID" data-id="@(child.BaseID)">
+                                    <div class="navEditorItem @(child.Visbility != VersionableVisbility.Public ? " hasStatus" : null) @(child.Visbility.ToString())">
+                                        @if (child.Visbility == VersionableVisbility.Unpublished)
+                                        {
+                                            <span class="fa fa-stack navEditorItemStatus" title="Unpublished"><span class="fa fa-file-o fa-stack-1x fa-fw"></span><span class="fa fa-times fa-stack-1x fa-fw"></span></span> @* unpublished *@
+                                        }
+                                        else if (child.Visbility == VersionableVisbility.Unlinked)
+                                        {
+                                            <span class="fa fa-chain-broken fa-stack-1x fa-fw navEditorItemStatus" title="Unlinked"></span> @* not linked *@
+                                        }
+                                        &nbsp;
+                                        @child.Title
+                                        @if (child.PageType == PortalType.Redirect)
+                                        {
+                                            <span class="fa fa-stack navEditorItemStatus"><span class="fa fa-file-o fa-stack-1x fa-fw"></span><span class="fa fa-mail-forward fa-stack-1x fa-fw"></span></span>
+                                        }
+
+                                        @if (child.Visbility == VersionableVisbility.Public && child.PageType == PortalType.Standard)
+                                        {
+                                            <span class="fa fa-fw fa-file-o navEditorItemStatus"></span>
+                                        }
+                                        <div class="navEditorItemOptionWrap">
+                                            <a class="navEditorItemEdit fa fa-pencil" href="@(string.IsNullOrEmpty(child.RedirectUrl) ? Url.Action("Edit", new { id = child.BaseID }) : Url.Action("Edit", new { id = child.BaseID, t = 1 }))"></a>
+                                            @if (child.ParentId != null)
+                                            {
+                                                <a class="navEditorItemDelete fa fa-trash-o"></a>
+                                            }
+                                        </div>
+                                    </div>
+                                </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+            </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $(".sortable>ul").nestedSortable({
+            listType: "ul",
+            create: function () {
+                $(this).height($(this).height());
+            },
+            handle: '.navEditorItem',
+            items: '.navEditorHandle',
+            forcePlaceholderSize: true,
+            placeholder: 'placeholder',
+            toleranceElement: '> div',
+            tolerance: 'intersect',
+            opacity: .6,
+            revert: 100,
+            maxLevels: 2,
+            protectRoot: true,
+            update: function (event, ui) {
+                console.log(JSON.stringify({ data: $(event.target).nestedSortable('toHierarchy', { startDepthCount: 0 }) }));
+                _gaq.push(['_trackEvent', 'Page', 'Reorder']);
+                $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: '@Url.Action("Order")',
+                        data: { Data: JSON.stringify({ data: $(event.target).nestedSortable('toHierarchy', { startDepthCount: 0 }) }) },
+                        success: function (data) {
+                            $(".sortable>ul").nestedSortable("enable");
+                            if (data.status == 0) {
+                                Admin.Updated();
+                            } else {
+                                alert("The reordering didn't happen successfully");
+                            }
+                        },
+                        error: function (xhr) {
+                            if (xhr.status == 409) {
+                                $('.sortable>ul').nestedSortable('enable');
+                                $('.sortable>ul').nestedSortable('cancel');
+
+                                //$(ui.sender).nestedSortable('cancel');
+                                alert("Moving this item would cause more than one title to be on the same level. Please rename one item before moving it.");
+                            }
+                            else {
+                                alert("The reordering didn't happen successfully");
+                            }
+                        }
+            })
+            }
+        });
+    })
+</script>
+
+

@@ -1,0 +1,190 @@
+﻿@model AdminBaseViewModel<List<JobApplication>>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+    ViewBag.Title = "Applications";
+    ApplicationStatus applicationStatus = (ViewBag.ApplicationStatus == null ? ApplicationStatus.New : (ApplicationStatus)ViewBag.ApplicationStatus);
+    JobType jobType = (ViewBag.JobCategory == null ? JobType.Driving : (JobType)ViewBag.JobCategory);
+}
+
+
+@section PageTitle {
+    <h1>Applications</h1>
+}
+
+<div class="adminContentWrap">
+    <div class="adminContentTable">
+        <div class="adminLeftColumn" style="min-width:1105px;">
+            <p class="sectionTitle">
+                Applications
+                <span class="inlineButtons">
+                    <a class="@(jobType == JobType.Driving ? "save" : "cancel")" href="@Url.Action("Index", new { t = JobType.Driving.ToString().ToLowerInvariant(), s = applicationStatus.ToString().ToLowerInvariant() })">Driving Jobs</a>
+                    <a class="@(jobType == JobType.Non_Driving ? "save" : "cancel")" href="@Url.Action("Index", new { t = JobType.Non_Driving.ToString().Replace("_","").ToLowerInvariant(), s = applicationStatus.ToString().ToLowerInvariant() })">Other Jobs</a>
+                    <a class="save" href="@Url.Action("Export")">Export to Excel</a>
+                </span>
+            </p>
+
+            <div class="headerSection">
+
+            </div>
+            <div class="topLinks">
+                <div id="selectionList" class="inlineFormField">
+                    <a class="@(applicationStatus == ApplicationStatus.New ? "current" : "link")" data-type="@ApplicationStatus.New.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.New.ToString().ToLowerInvariant()})">New (@ViewBag.NewCount)</a>
+                    &nbsp;|&nbsp;
+                    <a class="@(applicationStatus == ApplicationStatus.Prescreened ? "current" : "link")" data-type="@ApplicationStatus.Prescreened.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.Prescreened.ToString().ToLowerInvariant() })">Prescreened</a>
+                    &nbsp;|&nbsp;
+                    <a class="@(applicationStatus == ApplicationStatus.InConsideration ? "current" : "link")" data-type="@ApplicationStatus.InConsideration.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.InConsideration.ToString().ToLowerInvariant() })">In Consideration</a>
+                    &nbsp;|&nbsp;
+                    <a class="@(applicationStatus == ApplicationStatus.Approved ? "current" : "link")" data-type="@ApplicationStatus.Approved.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.Approved.ToString().ToLowerInvariant() })">Approved</a>
+                    &nbsp;|&nbsp;
+                    <a class="@(applicationStatus == ApplicationStatus.Rejected ? "current" : "link")" data-type="@ApplicationStatus.Rejected.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.Rejected.ToString().ToLowerInvariant() })">Rejected</a>
+                    &nbsp;|&nbsp;
+                    <a class="@(applicationStatus == ApplicationStatus.Archived ? "current" : "link")" data-type="@ApplicationStatus.Archived.ToString().ToLowerInvariant()" href="@Url.Action("Index", new { t = jobType.ToString().Replace("_","").ToLowerInvariant(), s = ApplicationStatus.Archived.ToString().ToLowerInvariant() })">Archived</a>
+                </div>
+                <div id="clickMenu">
+                    <a id="sendEmail" class="save" href="javascript:;">Compose Email</a>
+                    <select id="moveSelected" class="defaultSelect no-dirty">
+                        <option value="">Move to...</option>
+                        @foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+                        {
+                            string ignoreString = "new";
+                            if (Request.QueryString["s"] != null)
+                            {
+                                ignoreString = Request.QueryString["s"].ToString();
+                            }
+
+                            if (status.ToString().ToLowerInvariant() != ignoreString)
+                            {
+                                <option value="@status.ToString().ToLowerInvariant()">@(status == ApplicationStatus.InConsideration ? "In Consideration" : status.ToString())</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </div>
+
+            <table class="defaultTable">
+                <thead>
+                    <tr>
+                        <th class="header nosort">&nbsp;</th>
+                        <th class="header">Title</th>
+                        <th class="header">Job ID</th>
+                        <th class="header">City</th>
+                        <th class="header">Date Received</th>
+                        <th class="header">Last Name</th>
+                        <th class="header">First Name</th>
+                        <th class="header">Email</th>
+                        <th class="header">Phone</th>
+                        <th class="header">Contacted Last</th>
+                        <th class="nosort">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Item)
+                    {
+                        <tr class="" data-id="@item.ID">
+                            <td class="check"><input type="checkbox" data-id="@item.ID" data-email="@item.Email" class="chkItems no-dirty" /></td>
+                            <td class="">@(item.Job != null ? item.Job.Title : "Other")</td>
+                            <td class="">@(item.Job != null ? item.AppJobID : " ")</td>
+                            <td class="">@(item.Job != null ? item.Job.City : " " )</td>
+                            <td class="">@item.Submitted.ToString("yyyy-MM-dd hh:mm tt")</td>
+                            <td class="">@item.LastName</td>
+                            <td class="">@item.FirstName</td>
+                            <td class="">@item.Email</td>
+                            <td class="">@item.Phone</td>
+                            <td class="">@(item.EmailSent == null ? " " : item.EmailSent.Value.ToString("yyyy-MM-dd hh:mm tt"))</td>
+                            <td class="tableOptions">
+                                <a class="" href="@Url.Action("Details", new { id = item.ID })">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_modals")
+
+<script>
+    $(function () {
+        $(".defaultTable").tablesorter();
+
+        $(".chkItems").on("click", function (e) {
+            if ($(".chkItems:checked").length > 0) {
+                $("#clickMenu").css("display", "inline-block");
+            } else {
+                $("#clickMenu").css("display", "none");
+            }
+
+            if ($(this).is(":checked")) {
+                $(this).closest("tr").find("td").each(function (e) {
+                    $(this).css("background", "#ffc");
+                });
+            } else {
+                $(this).closest("tr").find("td").each(function (e) {
+                    $(this).css("background", "none");
+                });
+            }
+        });
+
+        $("#moveSelected").on("change", function (e) {
+
+            if ($(".chkItems:checked").length > 0) {
+                //var action = $(this).attr("data-type");
+                var action = $(this).val();
+                var idlist = new Array();
+                $(".chkItems:checked").each(function () { idlist.push($(this).attr("data-id")); });
+                var Info = {
+                    data: idlist,
+                    'action': action
+                };
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: '@Url.Action("UpdateStatus")',
+                    data: { Data: JSON.stringify(Info) },
+                    success: function (data) {
+                        if (data.status == 0)
+                        {
+                            //window.location.reload(true);
+                            window.location =  "@Url.Action("Index", new { t = Request.QueryString["t"] })&s=" + action;
+                        } else {
+                            alert("A problem occurred updating information.");
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("An error occurred.");
+                    }
+                });
+            }
+        });
+
+        var offset = $(".topLinks").offset().top;
+        
+        $(window).on("scroll", function (e) {
+            var topOffset = 300;
+            var $el = $(".topLinks");
+            var wtop = $(window).scrollTop();
+            var tableWidth = $(".defaultTable").width();
+            
+            if (wtop >= offset) {
+                $el.addClass("sticky");
+                $el.css({ "width": tableWidth + "px" });
+                
+            }
+            else {
+                $el.removeClass("sticky");
+                $el.css({ "width": "100%" });
+            }
+        });
+
+        $(window).resize(function (e) {
+            if ($(".sticky").length > 0) {
+                var $el = $(".topLinks");
+                var tableWidth = $(".defaultTable").width();
+                $el.css({ "width": tableWidth + "px" });
+            }
+        });
+    })
+</script>

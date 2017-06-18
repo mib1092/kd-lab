@@ -1,0 +1,43 @@
+﻿@model AdminBaseViewModel<TeamMember>
+@{
+    ViewBag.Title = "Edit Team Members";
+    Layout = "~/Areas/Admin/Views/Shared/DefaultEdit.cshtml";
+}
+@section ModuleTitle {
+    Team
+}
+@section ModuleTitleLink {
+    <a class="backLink" href="@Model.ListPage">back</a>
+}
+
+<div class="inlineFormField">
+    <p class="formDesc">First Name</p>
+    @Html.TextBoxFor(x => x.Item.Firstname, new { @class = "defaultInput" })
+</div>
+<div class="inlineFormField last">
+    <p class="formDesc">Last Name</p>
+    @Html.TextBoxFor(x => x.Item.Lastname, new { @class = "defaultInput" })
+</div>
+<div class="inlineFormField">
+    <p class="formDesc">Departement</p>
+    @Html.DropDownListFor(x => x.Item.Department, IMCMS.Web.SelectList.Departments, "Select Department...", new { @class = "defaultSelect", data_val = "true", data_val_required = "Please select a department." })
+</div>
+<div class="inlineFormField last">
+    <p class="formDesc">Job Title</p>
+    @Html.TextBoxFor(x => x.Item.JobTitle, new { @class = "defaultInput" })
+</div>
+<div class="inlineFormField">
+    <p class="formDesc">Year Started</p>
+    @Html.TextBoxFor(x => x.Item.YearStarted, new { @class = "defaultInput" })
+</div>
+<div class="inlineFormField last">
+    <p class="formDesc">Email</p>
+    @Html.TextBoxFor(x => x.Item.Email, new { @class = "defaultInput" })
+</div>
+
+@section RightColumn {
+    <div class="adminRightColumnInner adminRightColumnInnerNoHead">
+        @IMCMSAdmin.RightColumnPhotoUpload(Html, x => x.Item.PhotoID, Model.Item.Photo, "Photo", "")
+    </div>
+}
+

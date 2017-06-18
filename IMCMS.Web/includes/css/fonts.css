@@ -1,0 +1,15 @@
+﻿/**
+ * @license
+ * MyFonts Webfont Build ID 3405321, 2017-06-12T10:09:16-0400
+ * MyFonts Webfont Build ID 3407343, 2017-06-15T12:32:25-0400
+ * The fonts listed in this notice are subject to the End User License Agreement(s) entered into by the website owner. All other parties are explicitly restricted from using the Licensed Webfont(s).
+ * License: https://www.myfonts.com/viewlicense?type=web&buildid=3405321
+ * License: https://www.myfonts.com/viewlicense?type=web&buildid=3407343
+ * © 2017 MyFonts Inc
+*/
+@import url("//hello.myfonts.net/count/33f609");
+@import url("//hello.myfonts.net/count/33fdef");
+@font-face {font-family: 'MrEavesModOT';src: url('/includes/fonts/33FDEF_0_0.eot');src: url('/includes/fonts/33FDEF_0_0.eot?#iefix') format('embedded-opentype'),url('/includes/fonts/33FDEF_0_0.woff2') format('woff2'),url('/includes/fonts/33FDEF_0_0.woff') format('woff'),url('/includes/fonts/33FDEF_0_0.ttf') format('truetype');font-weight:700;}
+@font-face {font-family: 'MrEavesModOT';src: url('/includes/fonts/33F609_0_0.eot');src: url('/includes/fonts/33F609_0_0.eot?#iefix') format('embedded-opentype'),url('/includes/fonts/33F609_0_0.woff2') format('woff2'),url('/includes/fonts/33F609_0_0.woff') format('woff'),url('/includes/fonts/33F609_0_0.ttf') format('truetype');font-weight:900;}
+@font-face {font-family: 'Soleil';src: url('/includes/fonts/33F609_2_0.eot');src: url('/includes/fonts/33F609_2_0.eot?#iefix') format('embedded-opentype'),url('/includes/fonts/33F609_2_0.woff2') format('woff2'),url('/includes/fonts/33F609_2_0.woff') format('woff'),url('/includes/fonts/33F609_2_0.ttf') format('truetype');font-weight:300;}
+@font-face {font-family: 'Soleil';src: url('/includes/fonts/33F609_1_0.eot');src: url('/includes/fonts/33F609_1_0.eot?#iefix') format('embedded-opentype'),url('/includes/fonts/33F609_1_0.woff2') format('woff2'),url('/includes/fonts/33F609_1_0.woff') format('woff'),url('/includes/fonts/33F609_1_0.ttf') format('truetype');font-weight:900;}

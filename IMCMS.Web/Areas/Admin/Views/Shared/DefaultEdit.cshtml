@@ -1,0 +1,26 @@
+﻿@model AdminBaseViewModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+@section Buttons {
+    <button class="topBarLink topBarSave"><span class="fa fa-save"></span>Save</button>
+    <a class="topBarLink topBarCancel" href="@Model.ListPage"><span class="fa fa-close"></span>Cancel</a>
+}
+@section PageTitle {
+    @RenderSection("ModuleTitleLink", false)
+    <h1>@RenderSection("ModuleTitle", false)</h1>
+}
+<div class="adminContentWrap">
+    <div class="adminContentTable">
+        <div class="adminLeftColumn">
+            @RenderBody()
+            <div class="bottomButtonWrap">
+                <button class="save">Save</button>
+                <a class="cancel" href="@Model.ListPage">Cancel</a>
+            </div>
+        </div>
+        <div class="adminRightColumn">
+            @RenderSection("RightColumn", false)
+        </div>
+    </div>
+</div>
